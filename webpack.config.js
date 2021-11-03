@@ -48,13 +48,18 @@ module.exports = {
     host: '0.0.0.0',
     publicPath: '/',
     proxy: {
-      '/v2': {
+      '/central-settlements': {
+        // For local testing update `target` to point to your
+        // locally hosted or port-forwarded `central-settlements` service
         target: 'http://localhost:46109',
+        pathRewrite: { '^/central-settlements': '/v2' },
         secure: false,
       },
-      '/ledger': {
+      '/central-ledger': {
+        // For local testing update `target` to point to your
+        // locally hosted or port-forwarded `central-ledger` service
         target: 'http://localhost:33185',
-        pathRewrite: { '^/ledger': '' },
+        pathRewrite: { '^/central-ledger': '' },
         secure: false,
       },
     },

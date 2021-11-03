@@ -66,7 +66,7 @@ RUN chmod +x /usr/share/nginx/html/loadRuntimeConfig.sh
 
 USER appuser
 
-EXPOSE 8081
+EXPOSE 8083
 ENTRYPOINT ["/usr/share/nginx/html/entrypoint.sh"]
 CMD ["sh", "/usr/share/nginx/start.sh"]
 # TODO: Need to add 8080 to image-scan whitelist
