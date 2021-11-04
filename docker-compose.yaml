@@ -13,8 +13,8 @@ services:
       cache_from:
         - mojaloop/reporting-hub-bop-settlements-ui
     environment:
-      - CENTRAL_SETTLEMENTS_ENDPOINT=http://localhost:3008/
-      - CENTRAL_LEDGER_ENDPOINT=http://localhost:3001/
+      - CENTRAL_SETTLEMENTS_ENDPOINT=http://localhost:3008
+      - CENTRAL_LEDGER_ENDPOINT=http://localhost:3001
     ports:
       - "8083:8083"
     networks:
