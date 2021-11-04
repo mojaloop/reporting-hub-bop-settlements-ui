@@ -133,7 +133,7 @@ module.exports = {
     }),
     new EslintWebpackPlugin({
       extensions: ['ts', 'js', 'tsx', 'jsx'],
-      exclude: [`/node_modules/`],
+      exclude: [`node_modules`],
     }),
     new DotenvPlugin({
       systemvars: true,
