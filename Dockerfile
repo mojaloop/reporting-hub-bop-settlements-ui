@@ -69,5 +69,5 @@ USER appuser
 EXPOSE 8083
 ENTRYPOINT ["/usr/share/nginx/html/entrypoint.sh"]
 CMD ["sh", "/usr/share/nginx/start.sh"]
-# TODO: Need to add 8080 to image-scan whitelist
+# TODO: Need to add 8083 to image-scan whitelist
 #       Investigate Feed data unavailable, cannot perform CVE scan for distro: alpine:3.14.2
