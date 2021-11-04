@@ -4,6 +4,6 @@ import App from './App';
 
 test('renders the app', () => {
   const { container } = render(<App />);
-  const tabs = container.querySelectorAll('.user-iam-app');
+  const tabs = container.querySelectorAll('.settlements-app');
   expect(Array.from(tabs)).not.toHaveLength(0);
 });

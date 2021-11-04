@@ -9,7 +9,7 @@ import DFSPs from './DFSPs/index';
 function App() {
   const basePath = useBasePath();
   return (
-    <div className="user-iam-app">
+    <div className="settlements-app">
       {/* @ts-ignore */}
       <DFSPs>
         <Switch>
