@@ -1,10 +1,11 @@
-## Microfrontend Setup
+## Settlements Microfrontend Setup
 
 This microfrontend setup is configured to have this project acting as the remote.
 
 It is responsible to export the children modules/app which will be loaded at runtime and will be provided with some context e.g. auth, routing.
 
-`microfrontend-shell-boilerplate` is a default remote (child) boilerplate meant to be consumed by a host such as [microfrontend-shell-boilerplate](https://github.com/modusintegration/microfrontend-shell-boilerplate).
+`reporting-hub-bop-settlements-ui` is a remote microfrontend meant to be
+consumed by the host application [reporting-hub-bop-shell](https://github.com/mojaloop/reporting-hub-bop-shell).
 
 - [Isolation And Defined Boundary](#isolation-and-defined-boundary)
 - [Webpack Module Federation](#webpack-module-federation)
@@ -15,7 +16,7 @@ It is responsible to export the children modules/app which will be loaded at run
 
 - [Choosing A Unique Name](#choosing-a-unique-name)
 - [Custom Redux Context](#custom-redux-context)
-- [CSS Namespaceing](#css-namespacing)
+- [CSS Namespacing](#css-namespacing)
 
 #### Choosing a Unique Name
 

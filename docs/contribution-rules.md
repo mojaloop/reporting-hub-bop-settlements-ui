@@ -1,12 +1,12 @@
 ## Contribution Rules
 
-There is a precise approach on how to contribute to this project and there are security measures setup specifically to prevent unwanted behaviours.
+There is a precise approach on how to contribute to this project and there are security measures setup specifically to prevent unwanted behaviors.
 
 - [Pushing to the repo](#pushing-to-the-repo)
 - [Unit testing the code](#unit-testing-the-code)
 - [Versioning strategy](#versioning-strategy)
 
-### Pushing to the repo 
+### Pushing to the repo
 
 When adding changes to the repo, make sure the following rules are respected:
 
@@ -40,10 +40,4 @@ Views, routes, pages should be tested for assuring the right children components
 
 ### Versioning Strategy
 
-Versioning is done via `yarn version`. 
-
-> :warning: Changing the version should be done in the last commit of a branch/PR.
-
-Since `yarn version` automatically creates tags when the version is changed, the command can be suppressed with `--no-git-tag-version`.
-
-Usually a _patch_ version change is enough; if a new page/module is added, instead, a _minor_ should be used.
+Versioning is done CircleCI. There is no need to bump version numbers in commits.

@@ -5,10 +5,10 @@ In the project directory, you can run:
 
 #### `yarn start`
 
-Runs the app in the development mode over HTTPS.<br /> 
-Open [https://localhost:3000](https://localhost:3000) to view it in the browser.
+Runs the app in the development mode over HTTPS.<br />
+Open [https://localhost:3014](https://localhost:3014) to view it in the browser.
 
-**Note:** Self Signed Certificates are being used in dev mode; you are required to explicitely allow the browser to navigate to the page.
+**Note:** Self Signed Certificates are being used in dev mode; you are required to explicitly allow the browser to navigate to the page.
 
 HMR is setup automatically and the page will reload if you make edits.<br />
 You will also see any lint errors in the console.
