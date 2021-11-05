@@ -9,10 +9,10 @@ import {
   Select,
   DatePicker,
 } from 'outdated-components';
+import withMount from 'hocs';
 import { Settlement, DateRanges, SettlementStatus, SettlementFilters, FilterValue } from './types';
 import * as helpers from './helpers';
 import { dateRanges, settlementStatuses } from './constants';
-
 import SettlementDetails from './SettlementDetails';
 import SettlementFinalizingModal from './SettlementFinalizingModal';
 import './Settlements.css';
@@ -209,4 +209,4 @@ const Settlements: FC<SettlementsProps> = ({
   );
 };
 
-export default settlementsConnector(Settlements);
+export default settlementsConnector(withMount(Settlements, 'onMount'));

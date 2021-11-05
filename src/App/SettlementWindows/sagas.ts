@@ -130,7 +130,7 @@ function* closeSettlementWindow(action: PayloadAction<SettlementWindow>) {
       },
     });
 
-    if (response !== 200) {
+    if (response.status !== 200) {
       const info = response.data.errorInformation;
       const msg = !info ? '' : ` due to error ${info.errorCode}: "${info.errorDescription}"`;
       throw new Error(`Unable to Close Window${msg}`);

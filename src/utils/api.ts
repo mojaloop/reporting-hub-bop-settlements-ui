@@ -73,6 +73,13 @@ const closeSettlementWindow: EndpointConfig = {
 const dfsps: EndpointConfig = {
   service: services.ledgerService,
   url: () => '/participants',
+  withCredentials: true,
+};
+
+const participants: EndpointConfig = {
+  service: services.ledgerService,
+  url: () => '/participants',
+  withCredentials: true,
 };
 
 export default buildApi({
@@ -84,4 +91,5 @@ export default buildApi({
   settlementWindow: builder<{}>(settlementWindow),
   settlement: builder<{}>(settlement),
   settleSettlementWindows: builder<{}>(settleSettlementWindows),
+  participants: builder<{}>(participants),
 });

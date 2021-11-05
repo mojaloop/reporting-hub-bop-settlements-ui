@@ -13,6 +13,7 @@ import {
   DatePicker,
   Modal,
 } from 'outdated-components';
+import withMount from 'hocs';
 import {
   DateRanges,
   SettlementWindow,
@@ -176,6 +177,7 @@ function renderStatus(state: SettlementWindowStatus) {
     [SettlementWindowStatus.Pending]: { color: 'blue', label: 'Pending' },
     [SettlementWindowStatus.Settled]: { color: 'green', label: 'Settled' },
     [SettlementWindowStatus.Aborted]: { color: 'red', label: 'Aborted' },
+    [SettlementWindowStatus.Processing]: { color: 'white', label: 'Processing' },
   };
   const { color, label } = statusLabels[state];
   return (
@@ -300,4 +302,4 @@ const SettlementWindows: FC<SettlementWindowsProps> = ({
   );
 };
 
-export default settlementWindowsConnector(SettlementWindows);
+export default settlementWindowsConnector(withMount(SettlementWindows, 'onMount'));

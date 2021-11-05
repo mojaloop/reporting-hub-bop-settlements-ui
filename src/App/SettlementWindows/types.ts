@@ -41,6 +41,7 @@ export enum SettlementWindowStatus {
   Pending = 'PENDING_SETTLEMENT',
   Settled = 'SETTLED',
   Aborted = 'ABORTED',
+  Processing = 'PROCESSING',
 }
 
 export enum DateRanges {
