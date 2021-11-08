@@ -24,7 +24,7 @@ function MenuItems({ path }: MenuItemsProps) {
 }
 
 // ExportMenu is the exported component to be consumed
-// The shell passes down these props.
+// The shell passes down these props
 export default function ExportMenu({ path, pathname, onChange }: ExportMenuProps) {
   return (
     <Menu path={path} pathname={pathname} onChange={onChange}>
