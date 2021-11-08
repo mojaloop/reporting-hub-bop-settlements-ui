@@ -10,11 +10,11 @@ interface ExportMenuProps {
   onChange: (path: string) => void;
 }
 
-interface ExportMenuItemsProps {
+interface MenuItemsProps {
   path: string;
 }
 
-function MenuItems({ path }: ExportMenuItemsProps) {
+function MenuItems({ path }: MenuItemsProps) {
   return (
     <>
       <Menu.Item path={`${path}/windows`} label="Settlement Windows" />
