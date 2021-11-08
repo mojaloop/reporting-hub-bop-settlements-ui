@@ -6,33 +6,41 @@ import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
 interface ExportMenuProps {
   path: string;
+  pathname: string;
+  onChange: (path: string) => void;
 }
 
-function MenuItems({ path }: ExportMenuProps) {
+interface ExportMenuItemsProps {
+  path: string;
+}
+
+function MenuItems({ path }: ExportMenuItemsProps) {
   return (
     <>
       <Menu.Item path={`${path}/windows`} label="Settlement Windows" />
-      <Menu.Item path={`${path}/settlements`} label="Settlements" />
+      <Menu.Item path={`${path}/settle`} label="Settlements" />
     </>
   );
 }
 
-export default function ExportMenu({ path }: ExportMenuProps) {
+// ExportMenu is the exported component to be consumed
+// The shell passes down these props.
+export default function ExportMenu({ path, pathname, onChange }: ExportMenuProps) {
   return (
-    <Provider store={store} context={ReduxContext}>
-      <MenuItems path={path} />
-    </Provider>
+    <Menu path={path} pathname={pathname} onChange={onChange}>
+      <Provider store={store} context={ReduxContext}>
+        <MenuItems path={path} />
+      </Provider>
+    </Menu>
   );
 }
 
+// AppMenu is the standalone component used when the microfrontend is not being
+// consumed
 export function AppMenu() {
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();
   const path = match.url === '/' ? '' : match.url;
-  return (
-    <Menu path={path} pathname={location.pathname} onChange={history.push}>
-      <ExportMenu path={path} />
-    </Menu>
-  );
+  return <ExportMenu path={path} pathname={location.pathname} onChange={history.push} />;
 }

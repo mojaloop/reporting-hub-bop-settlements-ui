@@ -13,12 +13,8 @@ function App() {
       {/* @ts-ignore */}
       <DFSPs>
         <Switch>
-          <Route path={`${basePath}/windows`}>
-            <SettlementWindows />
-          </Route>
-          <Route path={`${basePath}/settlements`}>
-            <Settlements />
-          </Route>
+          <Route path={`${basePath}/windows`} component={SettlementWindows} />
+          <Route path={`${basePath}/settle`} component={Settlements} />
           <Route exact path={`${basePath}/`}>
             <Redirect to={`${basePath}/windows`} />
           </Route>

@@ -257,6 +257,10 @@ function* fetchSettlements() {
     const response = yield call(api.settlements.read, {
       params,
     });
+
+    if (response.status !== 200 || response.status !== 400) {
+      throw new Error(JSON.stringify(response));
+    }
     // Because when we call
     //   GET /v2/settlements?state=PS_TRANSFERS_RECORDED
     // and there are no settlements, central settlement returns

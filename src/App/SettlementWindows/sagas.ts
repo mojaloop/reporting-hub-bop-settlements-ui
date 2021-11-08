@@ -35,6 +35,10 @@ function* fetchSettlementWindows() {
     const response = yield call(api.settlementWindows.read, {
       params,
     });
+
+    if (response.status !== 200 || response.status !== 400) {
+      throw new Error(JSON.stringify(response));
+    }
     // Because when we call
     //   GET /v2/settlementWindows?fromDateTime=2021-06-29T23:00:00.000Z&toDateTime=2021-06-30T22:59:59.999Z
     // and there are no windows, central settlement returns

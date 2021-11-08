@@ -67,7 +67,6 @@ export default createReducer(initialState, (builder) =>
         isSettlementWindowsPending: false,
       }),
     )
-
     .addCase(
       selectSettlementWindowsFilterDateRange,
       (state: SettlementWindowsState, action: PayloadAction<DateRanges>) => ({
