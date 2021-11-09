@@ -1,5 +1,3 @@
-/node_modules
-
 # misc
 .DS_Store
 
@@ -8,3 +6,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+integration_test
+node_modules
+.git
+.github
