@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: reporting-hub-bop-settlements-ui
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /()(.*)
+        backend:
+          serviceName: reporting-hub-bop-settlements-ui
+          servicePort: http
+      - path: /api/ledger(/|$)(.*)
+        backend:
+          serviceName: centralledger-service
+          servicePort: 80
+      - path: /api/settlement(/|$)(.*)
+        backend:
+          serviceName: centralsettlement-service
+          servicePort: 80
+      - path: /api/portal-backend(/|$)(.*)
+        backend:
+          serviceName: portal-backend
+          servicePort: 3000
