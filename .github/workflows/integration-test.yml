@@ -88,7 +88,7 @@ jobs:
     - name: Run tests
       working-directory: integration_test/tests
       run: |-
-        SETTLEMENT_MICROFRONTEND_ENDPOINT="http://localhost:8083" npm run test:headless
+        SETTLEMENT_MICROFRONTEND_ENDPOINT="http://localhost:3000" npm run test:headless
 
     - name: Archive test report
       if: ${{ always() }}
