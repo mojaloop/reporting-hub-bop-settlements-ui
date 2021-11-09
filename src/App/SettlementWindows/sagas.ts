@@ -36,7 +36,7 @@ function* fetchSettlementWindows() {
       params,
     });
 
-    if (response.status !== 200 || response.status !== 400) {
+    if (response.status !== 200 && response.status !== 400) {
       throw new Error(JSON.stringify(response));
     }
     // Because when we call
