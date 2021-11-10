@@ -10,7 +10,6 @@
 
 import * as dotenv from 'dotenv';
 import * as assert from 'assert';
-import users from '../../manifests/backend/users.json'
 
 dotenv.config();
 
@@ -23,15 +22,5 @@ function ensureEnv(e: string): string {
 // TODO: ajv
 export const config = {
   settlementMicrofrontendEndpoint: ensureEnv('SETTLEMENT_MICROFRONTEND_ENDPOINT'),
-  credentials: {
-    admin: {
-      username: users[0].username,
-      password: users[0].password,
-    },
-    user: {
-      username: users[1].username,
-      password: users[1].password,
-    },
-  },
   voodooTimeoutMs: 30000,
 };
