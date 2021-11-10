@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const DotenvPlugin = require('dotenv-webpack');
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 require('dotenv').config({
   path: './.env',
@@ -19,6 +20,18 @@ const config = {
 const { ModuleFederationPlugin } = webpack.container;
 
 module.exports = {
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          keep_fnames: true,
+          sourceMap: true,
+        },
+      }),
+    ],
+  },
   entry: './src/index',
   devtool: 'cheap-module-source-map',
   devServer: {
