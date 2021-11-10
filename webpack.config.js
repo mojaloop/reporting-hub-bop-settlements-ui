@@ -20,6 +20,8 @@ const config = {
 const { ModuleFederationPlugin } = webpack.container;
 
 module.exports = {
+  // Class names are needed for integration testing of the production build
+  // `testcafe-react-selector` needs these classnames to be present
   optimization: {
     minimize: true,
     minimizer: [

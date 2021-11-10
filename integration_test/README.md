@@ -52,18 +52,6 @@ In the project root:
 ```sh
 skaffold run -p backend
 ```
-You'll need to wait a few minutes until the wso2is-populate job has completed. You can view its status
-with:
-```sh
-kubectl get jobs
-```
-When it's completed, it'll look like this:
-```
-NAME              COMPLETIONS   DURATION   AGE
-wso2is-populate   1/1           2m35s      6h26m
-```
-Specifically, `COMPLETIONS` will be `1/1`
-
 #### Port-forward the ingress and support service
 ```sh
 kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller 8000:80
