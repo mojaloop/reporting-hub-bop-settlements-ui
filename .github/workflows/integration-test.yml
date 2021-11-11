@@ -36,7 +36,6 @@ jobs:
       run: |-
         # - --k3s-server-arg args according to
         #   https://k3d.io/faq/faq/#solved-nodes-fail-to-start-or-get-stuck-in-notready-state-with-log-nf_conntrack_max-permission-denied
-        # - Many of these args conserve resources.. for WSO2.. sigh..
         # - We deploy our own for increased portability across k8s distributions
         k3d cluster create \
           --no-lb \
@@ -68,11 +67,6 @@ jobs:
       # Skaffold is supposed to do this, but for whatever reason, does not. At the time of writing,
       # investigating this was not a priority.
       run: timeout 900 kubectl wait --for=condition=Ready pod --all --timeout=900s
-
-    - name: Wait for populate to complete
-      # This normally happens about a minute after wso2is comes up, but sometimes takes a bit
-      # longer. We wait for the entire duration of the workflow job- why not..?
-      run: time kubectl wait --timeout=600s --for=condition=complete jobs/wso2is-populate
 
     - name: Port-forward the portal frontend ingress
       run: kubectl port-forward -n ingress-nginx --address 0.0.0.0 svc/ingress-nginx-controller 3000:80 &
