@@ -15,7 +15,7 @@ const closeOpenSettlementWindow = async (t: TestController): Promise<string> => 
     state: SettlementWindowStatus.Open,
   });
   // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(10000)
+  await t.wait(2000);
   const rows = await SettlementWindowsPage.getResultRows();
   await t.expect(rows.length).eql(1, 'Expected exactly one open settlement window');
   const { id, closeButton } = rows[0];
@@ -101,7 +101,7 @@ test.meta({
     state: SettlementWindowStatus.Open,
   });
 
-  await t.wait(2000)
+  await t.wait(2000);
 
   // TODO: consider comparing this with the ML API result? Or, instead, use the UI to set up a
   // state that we expect, i.e. by closing all existing windows, then observing the single
@@ -125,14 +125,14 @@ test.meta({
   const settlementWindowId = await closeOpenSettlementWindow(t);
 
   // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(10000)
+  await t.wait(2000);
 
   await SettlementWindowsPage.selectFiltersCustomDateRange(t, {
     state: SettlementWindowStatus.Closed,
   });
 
   // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(10000)
+  await t.wait(2000);
 
   const closedRows = await SettlementWindowsPage.getResultRows();
   await t.expect(closedRows.length).gt(0, 'Expected at least one closed settlement window');
@@ -194,7 +194,7 @@ test.meta({
   });
 
   // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(10000)
+  await t.wait(2000);
 
   const closedRows = await SettlementWindowsPage.getResultRows();
   await t.expect(closedRows.length).gt(1, 'Expected at least two closed settlement windows');
