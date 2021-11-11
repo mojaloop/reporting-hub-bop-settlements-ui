@@ -14,14 +14,12 @@ const closeOpenSettlementWindow = async (t: TestController): Promise<string> => 
   await SettlementWindowsPage.selectFiltersCustomDateRange(t, {
     state: SettlementWindowStatus.Open,
   });
-  // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(2000);
   const rows = await SettlementWindowsPage.getResultRows();
   await t.expect(rows.length).eql(1, 'Expected exactly one open settlement window');
   const { id, closeButton } = rows[0];
   const result = await id.innerText;
   await t.expect(closeButton.hasAttribute('disabled')).eql(false, 'Expected close button to be enabled');
-  await t.click(closeButton);
+  await t.click(closeButton).wait(2000);
   return result;
 }
 
@@ -66,7 +64,7 @@ fixture `Settlement windows page`
     await waitForReact(10000, t);
     // TODO: set things up so there's exactly one open window containing no transfers
     await t
-      .click(SideMenu.settlementWindowsButton);
+      .click(SideMenu.settlementWindowsButton).wait(2000);
   });
 
 test
@@ -101,8 +99,6 @@ test.meta({
     state: SettlementWindowStatus.Open,
   });
 
-  await t.wait(2000);
-
   // TODO: consider comparing this with the ML API result? Or, instead, use the UI to set up a
   // state that we expect, i.e. by closing all existing windows, then observing the single
   // remaining open window?
@@ -124,15 +120,9 @@ test.meta({
   // remaining open window?
   const settlementWindowId = await closeOpenSettlementWindow(t);
 
-  // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(2000);
-
   await SettlementWindowsPage.selectFiltersCustomDateRange(t, {
     state: SettlementWindowStatus.Closed,
   });
-
-  // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(2000);
 
   const closedRows = await SettlementWindowsPage.getResultRows();
   await t.expect(closedRows.length).gt(0, 'Expected at least one closed settlement window');
@@ -193,9 +183,6 @@ test.meta({
     state: SettlementWindowStatus.Closed,
   });
 
-  // TODO: Find a more elegant solution to wait on the UI to update
-  await t.wait(2000);
-
   const closedRows = await SettlementWindowsPage.getResultRows();
   await t.expect(closedRows.length).gt(1, 'Expected at least two closed settlement windows');
   const closedRowsById = Object.fromEntries(
@@ -207,10 +194,12 @@ test.meta({
   // Check our just-closed windows for closure
   await Promise.all(
     // Testcafe balks if we don't use async/await syntax here
-    settlementWindowIds.map(async id => await t.click(closedRowsById[id].checkbox))
+    settlementWindowIds.map(async id => {
+      await t.click(closedRowsById[id].checkbox).wait(2000);
+    }),
   );
 
-  await t.click(SettlementWindowsPage.settleWindowsButton);
+  await t.click(SettlementWindowsPage.settleWindowsButton).wait(2000);
   const settlements = await cli.getSettlements({
     state: 'PENDING_SETTLEMENT',
     settlementWindowId: settlementWindowIds[0],

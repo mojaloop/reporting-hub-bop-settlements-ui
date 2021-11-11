@@ -113,7 +113,7 @@ test.skip.meta({
     Date drop-down defaulted to Today, From and To drop-down defaulted to current date in MM/DD/YYYY HH:MM:SS format
     State should be empty and Clear Filters button`,
   async (t) => {
-    //Call Mojaloop Settlement API to get the current window details
+    // Call Mojaloop Settlement API to get the current window details
     // Check that the latest window ID that displays on the page is the same
   },
 );

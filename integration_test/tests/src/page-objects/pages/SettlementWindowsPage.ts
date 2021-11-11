@@ -43,10 +43,10 @@ const datePickerSelectDate = async (
   );
   for (let i = 0; i < Math.abs(numberOfPresses); i += 1) {
     // eslint-disable-next-line no-await-in-loop
-    await t.click(button);
+    await t.click(button).wait(2000);
   }
   const dayKey = `${newDate.year}${newDate.month - 1}${newDate.day}`;
-  await t.click(datePicker.findReact('Day').withKey(dayKey));
+  await t.click(datePicker.findReact('Day').withKey(dayKey)).wait(2000);
 };
 
 type Filters =
@@ -92,24 +92,24 @@ export const SettlementWindowsPage = {
 
   async selectFiltersCustomDateRange(t: TestController, filters: Filters) {
     // TODO: how does the actual UI present dates? What happens if we run the tests in a different TZ?
-    await t.click(this.clearFiltersButton);
-    await t.click(this.date);
+    await t.click(this.clearFiltersButton).wait(2000);
+    await t.click(this.date).wait(2000);
     // TODO: get 'Custom Range' from the application?
-    await t.click(ReactSelector('Select Option').withProps({ label: 'Custom Range' }));
+    await t.click(ReactSelector('Select Option').withProps({ label: 'Custom Range' })).wait(2000);
 
     if (filters.toDate) {
-      await t.click(this.toDate);
+      await t.click(this.toDate).wait(2000);
       datePickerSelectDate(t, this.toDatePicker, filters.toDate);
     }
 
     if (filters.fromDate) {
-      await t.click(this.fromDate);
+      await t.click(this.fromDate).wait(2000);
       datePickerSelectDate(t, this.fromDatePicker, filters.fromDate);
     }
 
     if (filters.state) {
-      await t.click(this.state);
-      await t.click(this.state.findReact('Option').withProps({ value: filters.state }));
+      await t.click(this.state).wait(2000);
+      await t.click(this.state.findReact('Option').withProps({ value: filters.state })).wait(2000);
     }
   },
 };
