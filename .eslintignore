@@ -1,0 +1,5 @@
+**/node_modules
+coverage/*
+.circleci/*
+ambient.d.ts
+commitlint.config.js
