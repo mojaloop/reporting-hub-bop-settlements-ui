@@ -1,6 +1,8 @@
 import moment from 'moment';
 import { DateRanges, SettlementWindow, SettlementWindowFilters } from './types';
 
+export { buildUpdateSettlementStateRequest } from 'App/helpers';
+
 const getDateRangesTimestamps = {
   Any: () => ({
     start: undefined,

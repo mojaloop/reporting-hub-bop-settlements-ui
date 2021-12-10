@@ -16,7 +16,8 @@
     "prettier": "prettier --write 'src/**/*.{ts,tsx,js,scss,css,json}' 'webpack.*.js'",
     "version": "node -pe \"require('./package.json').version\"",
     "name": "node -pe \"require('./package.json').name\"",
-    "test": "jest --env=jsdom --testMatch '**/*.test.tsx'"
+    "test": "jest --env=jsdom --testMatch '**/*.test.tsx'",
+    "test:unit": "jest --testMatch **/tests/unit/**/*test.ts"
   },
   "author": "",
   "license": "ISC",
@@ -39,18 +40,23 @@
     "@svgr/webpack": "^5.5.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
+    "@types/async-retry": "^1.4.3",
     "@types/classnames": "^2.2.10",
     "@types/history": "^4.7.7",
     "@types/html-webpack-plugin": "^3.2.3",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.161",
+    "@types/object-hash": "^2.2.1",
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
+    "@types/uuid": "^8.3.3",
     "@types/webpack-env": "^1.15.2",
     "@typescript-eslint/eslint-plugin": "4.9.0",
     "@typescript-eslint/parser": "4.9.0",
     "assert": "^2.0.0",
+    "async-retry": "^1.3.3",
+    "axe-core": "^4.0.2",
     "axios": "^0.21.2",
     "babel-jest": "^27.0.6",
     "babel-loader": "^8.1.0",
@@ -76,6 +82,7 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.0.4",
     "eslint-webpack-plugin": "^3.0.1",
+    "exceljs": "^4.3.0",
     "fork-ts-checker-webpack-plugin": "^6.3.2",
     "history": "4.10.1",
     "html-webpack-plugin": "^5.3.2",
@@ -85,6 +92,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.27.0",
     "node-fetch": "^2.6.1",
+    "object-hash": "^2.2.0",
     "prettier": "^2.0.5",
     "prettier-eslint": "^11.0.0",
     "prettier-eslint-cli": "^5.0.0",
@@ -105,11 +113,9 @@
     "stylelint-scss": "^3.20.1",
     "ts-loader": "^9.2.4",
     "typescript": "^4.3.5",
+    "uuid": "^8.3.2",
     "webpack": "^5.48.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "3.11.0"
-  },
-  "devDependencies": {
-    "axe-core": "^4.0.2"
   }
 }
