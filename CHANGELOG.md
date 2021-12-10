@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.3](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.2...v0.0.3) (2021-12-10)
+
+
+### Features
+
+* port over settlement finalization report code ([#5](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/5)) ([11e1e06](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/11e1e06d0ba882ae276448259b4ca25f69ac9849))
+
 ### [0.0.2](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.1...v0.0.2) (2021-12-09)
 
 
