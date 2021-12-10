@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.4](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.3...v0.0.4) (2021-12-10)
+
+
+### Bug Fixes
+
+* port over Use correct sign when comparing balance code from portal ([#6](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/6)) ([a6d5ca8](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/a6d5ca8d94d3a5e9cd0c4fc1ccba4af9008d4c15))
+
 ### [0.0.3](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.2...v0.0.3) (2021-12-10)
 
 
