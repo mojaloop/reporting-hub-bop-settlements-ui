@@ -5,5 +5,8 @@
     "@babel/proposal-object-rest-spread",
     "syntax-async-functions",
     "@babel/plugin-transform-runtime"
-  ]
+  ],
+  "targets": {
+    "browsers": "> 0.25%, not dead"
+  }
 }

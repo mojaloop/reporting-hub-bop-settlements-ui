@@ -9,7 +9,7 @@ const [centralSettlementsURL, centralLedgerURL] =
       ]
     : [process.env.CENTRAL_SETTLEMENTS_ENDPOINT || '', process.env.CENTRAL_LEDGER_ENDPOINT || ''];
 
-const services = {
+export const services = {
   settlementService: {
     baseUrl: centralSettlementsURL,
   },
@@ -82,6 +82,38 @@ const participants: EndpointConfig = {
   withCredentials: true,
 };
 
+const participantsLimits: EndpointConfig = {
+  service: services.ledgerService,
+  url: () => `/participants/limits`,
+};
+
+const participantLimits: EndpointConfig = {
+  service: services.ledgerService,
+  url: (_, { participantName }) => `/participants/${participantName}/limits`,
+};
+
+const participantAccounts: EndpointConfig = {
+  service: services.ledgerService,
+  url: (_, { participantName }) => `/participants/${participantName}/accounts`,
+};
+const participantAccountTransfer: EndpointConfig = {
+  service: services.ledgerService,
+  url: (
+    _: State,
+    {
+      participantName,
+      accountId,
+      transferId,
+    }: { participantName: string; accountId: string; transferId: string },
+  ) => `/participants/${participantName}/accounts/${accountId}/transfers/${transferId}`,
+};
+
+const participantAccount: EndpointConfig = {
+  service: services.ledgerService,
+  url: (_: State, { participantName, accountId }: { participantName: string; accountId: string }) =>
+    `/participants/${participantName}/accounts/${accountId}`,
+};
+
 export default buildApi({
   closeSettlementWindow: builder<{}>(closeSettlementWindow),
   dfsps: builder<{}>(dfsps),
@@ -92,4 +124,9 @@ export default buildApi({
   settlement: builder<{}>(settlement),
   settleSettlementWindows: builder<{}>(settleSettlementWindows),
   participants: builder<{}>(participants),
+  participantsLimits: builder<{}>(participantsLimits),
+  participantLimits: builder<{}>(participantLimits),
+  participantAccounts: builder<{}>(participantAccounts),
+  participantAccountTransfer: builder<{}>(participantAccountTransfer),
+  participantAccount: builder<{}>(participantAccount),
 });

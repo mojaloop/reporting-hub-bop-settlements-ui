@@ -1,3 +1,4 @@
+import { strict as assert } from 'assert';
 import api from 'utils/api';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
@@ -13,6 +14,8 @@ import {
   CLEAR_SETTLEMENT_WINDOWS_FILTER_STATE,
   CLEAR_SETTLEMENT_WINDOWS_FILTERS,
   SettlementWindow,
+  SettlementWindowStatus,
+  SettlementStatus,
 } from './types';
 import {
   requestSettlementWindows,
@@ -31,36 +34,63 @@ function* fetchSettlementWindows() {
     // @ts-ignore
     const filters = yield select(getSettlementWindowsFilters);
     const params = helpers.buildFiltersParams(filters);
-    // @ts-ignore
-    const response = yield call(api.settlementWindows.read, {
-      params,
-    });
 
-    if (response.status !== 200 && response.status !== 400) {
-      throw new Error(JSON.stringify(response));
-    }
-    // Because when we call
-    //   GET /v2/settlementWindows?fromDateTime=2021-06-29T23:00:00.000Z&toDateTime=2021-06-30T22:59:59.999Z
-    // and there are no windows, central settlement returns
-    //   400 Bad Request
-    //   {
-    //     "errorInformation": {
-    //       "errorCode": "3100",
-    //       "errorDescription": "Generic validation error - settlementWindow by filters: {fromDateTime:2021-06-29T23:00:00.000Z,toDateTime:2021-06-30T22:59:59.999Z} not found"
-    //     }
-    //   }
-    // We translate this response to an empty array.
-    // Source here:
-    //   https://github.com/mojaloop/central-settlement/blob/45ecfe32d1039870aa9572e23747c24cd6d53c86/src/domain/settlementWindow/index.js#L75
-    if (
-      response.status === 400 &&
-      /Generic validation error.*not found/.test(response.data?.errorInformation?.errorDescription)
-    ) {
-      yield put(setSettlementWindows([]));
-    } else {
-      yield put(setSettlementWindows(response.data));
-    }
+    // prettier-ignore
+    const now = (new Date()).toISOString();
+    // @ts-ignore
+    const windows = (yield all(
+      params.toDateTime > now && params.state === 'OPEN'
+        ? [
+            call(api.settlementWindows.read, {
+              params,
+            }),
+            call(api.settlementWindows.read, {
+              params: {
+                state: SettlementWindowStatus.Open,
+              },
+            }),
+          ]
+        : [
+            call(api.settlementWindows.read, {
+              params,
+            }),
+          ],
+    ))
+      .map((resp: { data: any; status: number }) => {
+        // Because when we call
+        //   GET /v2/settlementWindows?fromDateTime=2021-06-29T23:00:00.000Z&toDateTime=2021-06-30T22:59:59.999Z
+        // and there are no windows, central settlement returns
+        //   400 Bad Request
+        //   {
+        //     "errorInformation": {
+        //       "errorCode": "3100",
+        //       "errorDescription": "Generic validation error - settlementWindow by filters: {fromDateTime:2021-06-29T23:00:00.000Z,toDateTime:2021-06-30T22:59:59.999Z} not found"
+        //     }
+        //   }
+        // We translate this response to an empty array.
+        // Source here:
+        //   https://github.com/mojaloop/central-settlement/blob/45ecfe32d1039870aa9572e23747c24cd6d53c86/src/domain/settlementWindow/index.js#L75
+        if (
+          resp.status === 400 &&
+          /Generic validation error.*not found/.test(resp.data?.errorInformation?.errorDescription)
+        ) {
+          return [];
+        }
+        assert(
+          resp.status >= 200 && resp.status < 300,
+          `Failed to retrieve settlement window data`,
+        );
+        return resp.data;
+      })
+      .flat()
+      .reduce(
+        (map: Map<number, SettlementWindow>, win: SettlementWindow) =>
+          map.set(win.settlementWindowId, win),
+        new Map<number, SettlementWindow>(),
+      );
+    yield put(setSettlementWindows([...windows.values()]));
   } catch (e) {
+    console.error(e);
     yield put(setSettlementWindowsError(e.message));
   }
 }
@@ -100,18 +130,40 @@ function* settleWindows() {
     // @ts-ignore
     const settlementResponse = yield call(api.settleSettlementWindows.create, {
       body: {
+        // TODO: settlementModel must be parametrised
         settlementModel: 'DEFERREDNET',
         reason: 'Business Operations Portal request',
         settlementWindows: windows.map((w) => ({ id: w.settlementWindowId })),
       },
     });
+    assert.equal(settlementResponse.status, 200, 'Unable to settle settlement window');
 
-    if (settlementResponse.status !== 200) {
-      throw new Error('Unable to settle settlement window');
-    }
+    const settlement = settlementResponse.data;
+    // @ts-ignore
+    const settlementRecordedResult = yield call(
+      api.settlement.update,
+      helpers.buildUpdateSettlementStateRequest(settlement, SettlementStatus.PsTransfersRecorded),
+    );
+    assert.strictEqual(
+      settlementRecordedResult.status,
+      200,
+      `Mojaloop API error when advancing settlement state to PS_TRANSFERS_RECORDED: ${settlementRecordedResult.data}`,
+    );
+
+    // @ts-ignore
+    const settlementReservedResult = yield call(
+      api.settlement.update,
+      helpers.buildUpdateSettlementStateRequest(settlement, SettlementStatus.PsTransfersReserved),
+    );
+    assert.strictEqual(
+      settlementReservedResult.status,
+      200,
+      `Mojaloop API error when advancing settlement state to PS_TRANSFERS_RESERVED: ${settlementReservedResult.data}`,
+    );
 
     yield put(setSettleSettlementWindowsFinished(settlementResponse.id));
   } catch (e) {
+    console.error(e);
     yield put(setSettleSettlementWindowsError(e.message));
   }
 }
@@ -143,6 +195,7 @@ function* closeSettlementWindow(action: PayloadAction<SettlementWindow>) {
     yield put(setCloseSettlementWindowFinished());
     yield put(requestSettlementWindows());
   } catch (e) {
+    console.error(e);
     yield put(setSettlementWindowsError(e.message));
   }
 }
