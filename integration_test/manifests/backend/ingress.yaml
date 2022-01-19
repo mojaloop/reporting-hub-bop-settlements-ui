@@ -20,3 +20,7 @@ spec:
         backend:
           serviceName: centralsettlement-service
           servicePort: 80
+      - path: /api/reporting(/|$)(.*)
+        backend:
+          serviceName: bof-reporting-hub-bop-api-svc
+          servicePort: 80

@@ -77,6 +77,13 @@ module.exports = {
         pathRewrite: { '^/central-ledger': '' },
         secure: false,
       },
+      '/reporting-api': {
+        // For local testing update `target` to point to your
+        // locally hosted or port-forwarded `reporting-hub-bop-api-svc` service
+        target: 'http://localhost:port',
+        pathRewrite: { '^/reporting-api': '' },
+        secure: false,
+      },
     },
   },
   output: {
