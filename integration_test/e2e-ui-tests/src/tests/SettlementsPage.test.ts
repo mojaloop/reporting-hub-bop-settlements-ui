@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Selector } from 'testcafe';
 import { waitForReact } from 'testcafe-react-selectors';
-import { SettlementsPage, SettlementFinalizingModal, SettlementFinalizationWarningModal } from '../page-objects/pages/SettlementsPage';
+import { SettlementsPage, SettlementFinalizingModal, SettlementFinalizationWarningModal, SettlementDetailModal, WindowRow } from '../page-objects/pages/SettlementsPage';
 import { config } from '../config';
 import { SideMenu } from '../page-objects/components/SideMenu';
 import { VoodooClient, protocol } from 'mojaloop-voodoo-client';
@@ -226,6 +226,14 @@ test.meta({
     expectedAccountState,
     'All participant settlement account balances and NDCs should have been set correctly'
   );
+
+  // Open the detail modal to check if DFSP name is rendered for the settlement
+  await t.click(Selector(settlementRowAfter.id))
+  const settlementDetailRows = await SettlementDetailModal.getWindowsRows()
+  const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
+  await t.expect(dfspNames.includes(participants[0].name)).ok()
+  await t.expect(dfspNames.includes(participants[1].name)).ok()
+  await t.click(SettlementDetailModal.closeButton)
 });
 
 
@@ -237,7 +245,7 @@ test.skip.meta({
     Date drop-down defaulted to Today, From and To drop-down defaulted to current date in MM/DD/YYYY HH:MM:SS format
     State should be empty and Clear Filters button`,
   async (t) => {
-    //Call Mojaloop Settlement API to get the current window details
+    // Call Mojaloop Settlement API to get the current window details
     // Check that the latest window ID that displays on the page is the same
   },
 );
