@@ -22,3 +22,5 @@ spec:
             value: /api/settlement/v2
           - name: CENTRAL_LEDGER_ENDPOINT
             value: /api/ledger
+          - name: REPORTING_API_ENDPOINT
+            value: /api/reporting

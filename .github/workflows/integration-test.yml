@@ -39,22 +39,16 @@ jobs:
       run: nix-env -if integration_test/default.nix
 
     - name: Start cluster
-      run: |-
-        # - --k3s-server-arg args according to
-        #   https://k3d.io/faq/faq/#solved-nodes-fail-to-start-or-get-stuck-in-notready-state-with-log-nf_conntrack_max-permission-denied
-        # - We deploy our own for increased portability across k8s distributions
-        k3d cluster create \
-          --no-lb \
-          --no-rollback \
-          --k3s-server-arg "--kube-proxy-arg=conntrack-max-per-core=0" \
-          --k3s-agent-arg "--kube-proxy-arg=conntrack-max-per-core=0" \
-          --k3s-server-arg "--disable=traefik" \
-          --k3s-server-arg "--disable=metrics-server" \
-          --k3s-server-arg "--disable-cloud-controller" \
-          --kubeconfig-update-default \
-          --kubeconfig-switch-context \
-          --image=rancher/k3s:v1.17.9-k3s1 \
-          int-test
+      run: minikube start --driver=docker --kubernetes-version=v1.21.5
+
+    - name: Install Mojaloop Charts
+      run: helm repo add mojaloop-charts https://docs.mojaloop.io/charts/repo
+
+    - name: Install BizOps Backend
+      run: helm upgrade --install backend mojaloop-charts/backend --devel -f integration_test/chart_values/backend.yaml
+
+    - name: Install BizOps Services
+      run: helm upgrade --install bof mojaloop-charts/bof --devel -f integration_test/chart_values/bof.yaml --version 1.0.0-557.7cb0c96
 
     - name: Deploy
       run: skaffold run -p integration-test

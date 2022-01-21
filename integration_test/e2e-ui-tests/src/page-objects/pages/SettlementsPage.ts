@@ -54,11 +54,11 @@ type Filters =
   | { state: SettlementStatus, toDate?: Temporal.PlainDate; fromDate?: Temporal.PlainDate };
 
 export type WindowRow = {
-  id: Selector,
   dfsp: Selector,
+  state: Selector,
+  currency: Selector,
   debit: Selector,
   credit: Selector,
-  viewNetPositionsButton: Selector,
 };
 
 const settlementFinalizingModalRootReactSelector = 'SettlementFinalizingModal Modal ModalPortal ModalBackground';
@@ -81,8 +81,6 @@ const SettlementDetailModalRoot = ReactSelector('Modal').withProps({ title: 'Set
 export const SettlementDetailModal = {
   async getWindowsRows(): Promise<WindowRow[]> {
     // TODO: this selector should be better; may need to have .displayName set on the component
-    await t.expect(ReactSelector('Modal').exists).ok('Expected to find settlement detail modal');
-    // TODO: this selector should be better; may need to have .displayName set on the component
     await t.expect(SettlementDetailModalRoot.exists).ok('Expected to find settlement detail modal root');
     const rows = SettlementDetailModalRoot.findReact('DataList Rows').findReact('RowItem');
     // This `expect` forces TestCafe to take a snapshot of the DOM. If we don't make this call,
@@ -93,12 +91,13 @@ export const SettlementDetailModal = {
       .from({ length })
       .map((_, i) => ({
         dfsp: rows.nth(i).findReact('ItemCell').nth(0),
-        id: rows.nth(i).findReact('ItemCell').nth(1),
-        debit: rows.nth(i).findReact('ItemCell').nth(2),
-        credit: rows.nth(i).findReact('ItemCell').nth(3),
-        viewNetPositionsButton: rows.nth(i).findReact('ItemCell').nth(4).findReact('Button'),
+        state: rows.nth(i).findReact('ItemCell').nth(1),
+        currency: rows.nth(i).findReact('ItemCell').nth(2),
+        debit: rows.nth(i).findReact('ItemCell').nth(3),
+        credit: rows.nth(i).findReact('ItemCell').nth(4),
       }));
   },
+  closeButton: SettlementDetailModalRoot.findReact('Button'),
 }
 
 export const SettlementsPage = {

@@ -4,6 +4,7 @@ resources:
 - github.com/partiallyordered/voodoo-doll/kubernetes?ref=ad96349ef8fe91a422377be8f53aea56aee60c8e
 - ingress.yaml
 - ../reporting-service
+- secret_copy.yaml
 
 configMapGenerator: []
 

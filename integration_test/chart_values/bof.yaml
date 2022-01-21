@@ -1,0 +1,153 @@
+## Installation
+# helm upgrade bof ./mojaloop/bof --install
+
+# Default values for bof.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  adminApiSvc:
+    host: "centralledger-service"
+    port: 80
+  keto:
+    readURL: "http://keto-read:80"
+    writeURL: "http://keto-write:80"
+  wso2:
+    identityServer:
+      host: "wso2-identity-server.local"
+      port: 9443
+      userListURL: "http://wso2-identity-server.local:9443/scim2/Users"
+      user: 'admin'
+      secret:
+        name: wso2-is-admin-creds
+        key: password
+  reportingDB:
+    host: centralledger-mysql
+    port: 3306
+    user: central_ledger
+    database: central_ledger
+    # secret: {}
+    secret:
+      name: ledger-mysql-copy
+      key: password
+  reportingEventsDB:
+    host: reporting-events-db
+    port: 27017
+    user: user
+    database: default
+    # secret: {}
+    secret:
+      name: reporting-events-db
+      key: mongodb-password
+  kafka:
+    host: kafka
+    port: 9092
+    topic: topic-event
+  mojalooprole: {}
+
+## Backend API services
+role-assignment-service:
+  enabled: false
+  ingress:
+    enabled: false
+    hostname: api-bof.local
+    path: /proxy/iam(/|$)(.*)
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+  configFiles:
+    default.json: {
+        "ROLES_LIST": [
+          "USER_ROLE_abc7a2fd-4acf-4547-a194-1673f63eb37c",
+          "ADMIN_ROLE_6c1ec084-86d4-4915-ba81-6c59b87a65a6"
+        ]
+      }
+
+reporting-hub-bop-api-svc:
+  enabled: true
+  auth: false
+  ingress:
+    enabled: true
+    hostname: api-bof.local
+    path: /proxy/transfers(/|$)(.*)
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+reporting-legacy-api:
+  enabled: false
+  ingress:
+    enabled: true
+    hostname: api-bof.local
+    path: /proxy/reports(/|$)(.*)
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+## Front-end UI services
+### Shell and helper UI services
+reporting-hub-bop-shell:
+  enabled: false
+  ingress:
+    hostname: www-bof.local
+  env:
+    LOGIN_URL: /kratos/self-service/registration/browser
+    LOGOUT_URL: /kratos/self-service/browser/flows/logout
+    AUTH_TOKEN_URL: /kratos/sessions/whoami
+    AUTH_ENABLED: true
+    REMOTE_1_URL: http://reporting-hub-bop-role-ui.local
+    REMOTE_2_URL: http://reporting-hub-bop-trx-ui.local
+
+security-hub-bop-kratos-ui:
+  enabled: false
+  ingress:
+    hostname: www-bof.local
+    path: /selfui/auth(/|$)(.*)
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /$2
+
+### Micro-frontends
+reporting-hub-bop-role-ui:
+  enabled: false
+  ingress:
+    enabled: true
+    pathType: ImplementationSpecific
+    hostname: reporting-hub-bop-role-ui.local
+  config:
+    env:
+      REACT_APP_API_BASE_URL: http://www-bof.local/proxy/iam
+
+reporting-hub-bop-trx-ui:
+  enabled: false
+  ingress:
+    enabled: true
+    pathType: ImplementationSpecific
+    hostname: reporting-hub-bop-trx-ui.local
+  config:
+    env:
+      REACT_APP_API_BASE_URL: http://www-bof.local/proxy/transfers
+
+reporting-hub-bop-positions-ui:
+  enabled: false
+  ingress:
+    enabled: false
+    pathType: ImplementationSpecific
+    hostname: reporting-hub-bop-positions-ui.local
+  config:
+    env:
+      CENTRAL_LEDGER_ENDPOINT: http://test1-centralledger-service:80
+
+reporting-hub-bop-settlements-ui:
+  enabled: false
+  ingress:
+    enabled: false
+    pathType: ImplementationSpecific
+    hostname: reporting-hub-bop-settlements-ui.local
+  config:
+    env:
+      CENTRAL_LEDGER_ENDPOINT: http://test1-centralledger-service:80
+      CENTRAL_SETTLEMENTS_ENDPOINT: http://test1-centralsettlement-service:80
+
+## Other services
+security-role-perm-operator-svc:
+  enabled: false
+
+reporting-events-processor-svc:
+  enabled: true
