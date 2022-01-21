@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.6](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.5...v0.0.6) (2022-01-21)
+
+
+### Bug Fixes
+
+* leverage reporting api for dfsp retrieval for id ([#9](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/9)) ([ce31103](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/ce311036aedc28534629a82797dec54afade1aaa))
+
 ### [0.0.5](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.4...v0.0.5) (2022-01-20)
 
 
