@@ -13,7 +13,6 @@ function* fetchDfsps() {
         variables: {},
       },
     });
-    console.log(response);
     yield put(setDfsps(response.data.data.dfsps));
   } catch (e) {
     yield put(setDfspsError(e.message));
