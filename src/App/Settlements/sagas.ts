@@ -100,6 +100,9 @@ function* processAdjustments({
   // One partial resolution to this problem might be to process the NDC updates serially and
   // perform all other processing concurrently. At the time of writing, modifying the following
   // (working) code to do so was not considered a priority.
+
+  // @ts-ignore
+  const report: SettlementReport = yield select(getSettlementReport);
   const results: FinalizeSettlementProcessAdjustmentsError[] = [];
   for (let i = 0; i < adjustments.length; i++) {
     const adjustment = adjustments[i];
@@ -188,7 +191,7 @@ function* processAdjustments({
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
         body: {
-          externalReference: description,
+          externalReference: report?.reportFileName,
           action: 'recordFundsIn',
           reason: description,
           amount: {
@@ -219,7 +222,7 @@ function* processAdjustments({
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
         body: {
-          externalReference: description,
+          externalReference: report?.reportFileName,
           action: 'recordFundsOutPrepareReserve',
           reason: description,
           amount: {

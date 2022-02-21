@@ -20,6 +20,7 @@ const config = {
 const { ModuleFederationPlugin } = webpack.container;
 
 module.exports = {
+  // mode: "development",
   // Class names are needed for integration testing of the production build
   // `testcafe-react-selector` needs these classnames to be present
   optimization: {
@@ -35,7 +36,7 @@ module.exports = {
     ],
   },
   entry: './src/index',
-  devtool: 'cheap-module-source-map',
+  devtool: 'source-map',
   devServer: {
     disableHostCheck: true,
     // Enable gzip compression of generated files.
@@ -66,21 +67,21 @@ module.exports = {
       '/central-settlements': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `central-settlements` service
-        target: 'http://host:port',
+        target: 'http://localhost:3007',
         pathRewrite: { '^/central-settlements': '/v2' },
         secure: false,
       },
       '/central-ledger': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `central-ledger` service
-        target: 'http://host:port',
+        target: 'http://localhost:3001',
         pathRewrite: { '^/central-ledger': '' },
         secure: false,
       },
       '/reporting-api': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `reporting-hub-bop-api-svc` service
-        target: 'http://localhost:port',
+        target: 'http://localhost:3080',
         pathRewrite: { '^/reporting-api': '' },
         secure: false,
       },

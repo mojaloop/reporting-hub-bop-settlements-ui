@@ -216,6 +216,7 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
                 signal.addEventListener('abort', () => reject(new Error('aborted')));
                 readFileAsArrayBuffer(file)
                   .then((fileBuf) => deserializeReport(fileBuf))
+                  .then((report) => ({ ...report, reportFileName: file.name }))
                   .then(resolve, reject);
               })
                 .catch((err) => {

@@ -304,6 +304,7 @@ export interface SettlementReportEntry {
 export interface SettlementReport {
   settlementId: SettlementId;
   entries: SettlementReportEntry[];
+  reportFileName?: string;
 }
 
 export enum DateRanges {

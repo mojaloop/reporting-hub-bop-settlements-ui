@@ -1,6 +1,6 @@
 ## External API
 
-`reporting-hub-bop-settlements-ui` is reliant on two mojaloop services.
+`reporting-hub-bop-settlements-ui` is reliant on three mojaloop services.
 When running locally, you can use the environment variables
 `CENTRAL_SETTLEMENTS_ENDPOINT`, `CENTRAL_LEDGER_ENDPOINT` and `REPORTING_API_ENDPOINT`
 in `.env` to specify the location of the api services.
@@ -13,3 +13,12 @@ NOTE: These endpoints are a stopgap. In the future these environment variables
       for the Settlements microfrontend instead of calling Mojaloop services directly.
 
 For more information's on React variables check [here](https://facebook.github.io/create-react-app/docs/adding-custom-environment-variables).
+
+
+## Port forwarding
+If you want connect to the live services deployed in K8S, you can port forward the services using the following commands.
+```
+kubectl port-forward -n mojaloop service/moja-centralledger-service 3001:80 &
+kubectl port-forward -n mojaloop service/moja-centralsettlement-service 3007:80 &
+kubectl port-forward -n mojaloop service/bof-reporting-hub-bop-api-svc 3080:80 &
+```
