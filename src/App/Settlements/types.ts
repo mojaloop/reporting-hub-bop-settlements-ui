@@ -104,6 +104,7 @@ export enum SettlementReportValidationKind {
   TransfersSumNonZero = 'Sum of transfers in the report is non-zero',
   TransferDoesNotMatchNetSettlementAmount = 'Transfer amount does not match net settlement amount',
   BalanceNotAsExpected = 'Balance not modified corresponding to transfer amount',
+  NegativeOrZeroBalance = 'Balance provided in the report is not a positive value',
   AccountsNotPresentInReport = 'Accounts in settlement not present in report',
   ExtraAccountsPresentInReport = 'Accounts in report not present in settlement',
   ReportIdentifiersNonMatching = 'Report identifiers do not match - participant ID, account ID and participant name must match',
@@ -150,6 +151,14 @@ export type SettlementReportValidation =
         reportBalance: number;
         expectedBalance: number;
         transferAmount: number;
+        account: AccountWithPosition;
+      };
+    }
+  | {
+      kind: SettlementReportValidationKind.NegativeOrZeroBalance;
+      data: {
+        entry: SettlementReportEntry;
+        reportBalance: number;
         account: AccountWithPosition;
       };
     }
