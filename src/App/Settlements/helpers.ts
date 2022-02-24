@@ -490,6 +490,11 @@ export function generateSettlementReportValidationDetail(val: SettlementReportVa
         `an expected balance of ${val.data.expectedBalance}, not ${val.data.reportBalance} as ` +
         `per the report.`
       );
+    case SettlementReportValidationKind.NegativeOrZeroBalance:
+      return (
+        `Row ${val.data.entry.row.rowNumber} of the report indicates a balance which is in arrears by ${val.data.reportBalance}. ` +
+        `***Updating the balance will prevent '${val.data.entry.participant.name}' from sending money until this is rectified.***`
+      );
     case SettlementReportValidationKind.AccountsNotPresentInReport: {
       // prettier-ignore
       const printAccount = (
@@ -566,6 +571,11 @@ export function explainSettlementReportValidationKind(kind: SettlementReportVali
         'appropriate) the current liquidity account balance value in the switch. The result is expected to be equal ' +
         'to the new liquidity account balance in the settlement finalization report. These may not be equal if ' +
         'funds have been added to or removed from the switch liquidity account balance since settlement initiation.'
+      );
+    case SettlementReportValidationKind.NegativeOrZeroBalance:
+      return (
+        'The balance in the settlement finalization report is expected to be a positive value. ' +
+        'Zero or negative value results in unexpected balance updates and the account may not be operational.'
       );
     case SettlementReportValidationKind.AccountsNotPresentInReport:
       return 'The settlement finalization report does not contain all report present in the settlement.';
@@ -715,10 +725,8 @@ export const validationFunctions = {
           e !== undefined,
       )
       .forEach(({ entry, settlementAccount }) => {
-        const expectedBalance = settlementAccount.value + entry.transferAmount;
-        // As the balances in the settlement finalization report are given in positive numbers
-        // We are making sure that we are converting it to negative value always
-        const reportBalance = -Math.abs(entry.balance);
+        const expectedBalance = -settlementAccount.value - entry.transferAmount;
+        const reportBalance = entry.balance;
         if (!equal(expectedBalance, reportBalance)) {
           result.add({
             kind: SettlementReportValidationKind.BalanceNotAsExpected,
@@ -727,6 +735,16 @@ export const validationFunctions = {
               reportBalance,
               expectedBalance,
               transferAmount: entry.transferAmount,
+              account: settlementAccount,
+            },
+          });
+        }
+        if (reportBalance <= 0) {
+          result.add({
+            kind: SettlementReportValidationKind.NegativeOrZeroBalance,
+            data: {
+              entry,
+              reportBalance,
               account: settlementAccount,
             },
           });
