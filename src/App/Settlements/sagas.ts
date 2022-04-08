@@ -519,7 +519,10 @@ function* validateSettlementReport(): any {
   const adjustments = buildAdjustments(report, finalizeData);
 
   const [debits, credits] = adjustments.reduce(
-    ([dr, cr], adj) => (adj.amount < 0 ? [[...dr, adj], cr] : [dr, [...cr, adj]]),
+    ([dr, cr], adj) =>
+      adj.settlementParticipantAccount.netSettlementAmount.amount < 0
+        ? [[...dr, adj], cr]
+        : [dr, [...cr, adj]],
     [[], []],
   );
 
