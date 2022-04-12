@@ -3,3 +3,5 @@ coverage/*
 .circleci/*
 ambient.d.ts
 commitlint.config.js
+.eslintrc.js
+webpack.config.js
