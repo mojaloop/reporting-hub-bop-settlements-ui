@@ -9,5 +9,5 @@
       "configPath": "tsconfig.json"
     }
   },
-  "disablePageCaching": true
+  "disablePageCaching": false
 }
