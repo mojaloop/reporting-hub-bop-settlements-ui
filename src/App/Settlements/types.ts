@@ -89,6 +89,7 @@ export interface Adjustment {
   currentLimit: Limit;
   settlementParticipantAccount: SettlementParticipantAccount;
   settlementParticipant: SettlementParticipant;
+  dfspInsolvement: boolean;
 }
 
 export interface LedgerParticipant {
@@ -232,6 +233,7 @@ export interface FinalizeSettlementSettlementParticipantAccountUpdateError {
 // prettier-ignore
 export enum FinalizeSettlementProcessAdjustmentsErrorKind {
   SET_NDC_FAILED                               = 'Error attempting to set NDC',
+  DISABLE_PARTICIPANT_FAILED                   = 'Error disabling participant',
   FUNDS_PROCESSING_FAILED                      = 'Error attempting to process funds in/out',
   BALANCE_UNCHANGED                            = 'Balance unchanged after processing funds in/out',
   BALANCE_INCORRECT                            = 'Incorrect resulting balance after processing funds in/out',
@@ -259,6 +261,10 @@ export type FinalizeSettlementProcessAdjustmentsError =
     }
   | {
       type: FinalizeSettlementProcessAdjustmentsErrorKind.SET_NDC_FAILED;
+      value: FinalizeSettlementProcessAdjustmentsRequestError;
+    }
+  | {
+      type: FinalizeSettlementProcessAdjustmentsErrorKind.DISABLE_PARTICIPANT_FAILED;
       value: FinalizeSettlementProcessAdjustmentsRequestError;
     }
   | {

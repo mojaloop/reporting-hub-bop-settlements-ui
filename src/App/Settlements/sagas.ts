@@ -106,6 +106,36 @@ function* processAdjustments({
   const results: FinalizeSettlementProcessAdjustmentsError[] = [];
   for (let i = 0; i < adjustments.length; i++) {
     const adjustment = adjustments[i];
+
+    if (adjustment.dfspInsolvement) {
+      // Disable participant account
+      const positionAccountId = adjustment.participant.accounts.find(
+        (acc) => acc.ledgerAccountType === 'POSITION',
+      )!.id;
+      const disableParticipantRequest = {
+        participantName: adjustment.participant.name,
+        accountId: positionAccountId,
+        body: {
+          isActive: false,
+        },
+      };
+      const disableParticipantResult: ApiResponse = yield call(
+        api.participantAccount.update,
+        disableParticipantRequest,
+      );
+      if (disableParticipantResult.status !== 200) {
+        results.push({
+          type: FinalizeSettlementProcessAdjustmentsErrorKind.DISABLE_PARTICIPANT_FAILED,
+          value: {
+            adjustment,
+            error: disableParticipantResult.data,
+            request: disableParticipantRequest,
+          },
+        });
+        break;
+      }
+    }
+
     const stateOrder = [
       SettlementStatus.Aborted,
       SettlementStatus.PendingSettlement,
@@ -128,6 +158,7 @@ function* processAdjustments({
       break;
     }
     if (
+      (adjustment.dfspInsolvement && adjustment.currentLimit.value > 0) ||
       (adjustNdc.increases && adjustment.currentLimit.value < adjustment.settlementBankBalance) ||
       (adjustNdc.decreases && adjustment.currentLimit.value > adjustment.settlementBankBalance)
     ) {
@@ -137,7 +168,7 @@ function* processAdjustments({
           currency: adjustment.positionAccount.currency,
           limit: {
             ...adjustment.currentLimit,
-            value: adjustment.settlementBankBalance,
+            value: Math.max(adjustment.settlementBankBalance, 0),
           },
         },
       };
@@ -275,12 +306,12 @@ function* processAdjustments({
 
     // Poll for a while to confirm the new balance
     const POLL_ATTEMPTS = 5;
+    const expectedAccountBalance = Math.max(0, adjustment.settlementBankBalance);
     for (let j = 0; j < POLL_ATTEMPTS; j++) {
       const SECONDS = 1000;
       yield delay(2 * SECONDS);
       const newBalanceResult: ApiResponse = yield call(api.participantAccounts.read, {
         participantName: adjustment.participant.name,
-        accountId: adjustment.settlementAccount.id,
       });
 
       // If the call fails, we'll just try again- so don't handle a failure status code
@@ -288,15 +319,12 @@ function* processAdjustments({
         (acc: AccountWithPosition) => acc.id === adjustment.settlementAccount.id,
       )?.value;
 
-      if (
-        newBalanceResult.status === 200 &&
-        newBalance &&
-        newBalance !== adjustment.settlementAccount.value
-      ) {
+      // Check if balance is changed since last GET
+      if (newBalanceResult.status === 200 && newBalance !== adjustment.settlementAccount.value) {
         // We use "negative" newBalance because the switch returns a negative value for credit
         // balances. The switch doesn't have a concept of debit balances for settlement
         // accounts.
-        if (-newBalance !== adjustment.settlementBankBalance) {
+        if (-newBalance !== expectedAccountBalance) {
           results.push({
             type: FinalizeSettlementProcessAdjustmentsErrorKind.BALANCE_INCORRECT,
             value: {
@@ -458,7 +486,6 @@ function buildAdjustments(
       switchBalance !== undefined,
       `Failed to retrieve position for account ${settlementAccountId}`,
     );
-    const amount = settlementBankBalance - switchBalance;
 
     const settlementParticipantAccount = settlementParticipantAccounts.get(positionAccountId);
     assert(
@@ -472,6 +499,14 @@ function buildAdjustments(
       `Failed to retrieve settlement participant for account ${positionAccountId}`,
     );
 
+    const dfspInsolvement = settlementBankBalance < 0;
+    let amount;
+    if (dfspInsolvement) {
+      amount = -switchBalance;
+    } else {
+      amount = settlementBankBalance - switchBalance;
+    }
+
     return {
       settlementBankBalance,
       participant,
@@ -481,6 +516,7 @@ function buildAdjustments(
       currentLimit,
       settlementParticipantAccount,
       settlementParticipant,
+      dfspInsolvement,
     };
   });
 }

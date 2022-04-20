@@ -492,8 +492,10 @@ export function generateSettlementReportValidationDetail(val: SettlementReportVa
       );
     case SettlementReportValidationKind.NegativeOrZeroBalance:
       return (
-        `Row ${val.data.entry.row.rowNumber} of the report indicates a balance which is in arrears by ${val.data.reportBalance}. ` +
-        `***Updating the balance will prevent '${val.data.entry.participant.name}' from sending money until this is rectified.***`
+        `Row ${
+          val.data.entry.row.rowNumber
+        } of the report indicates a balance which is in arrears by ${-val.data.reportBalance}. ` +
+        `Proceeding with settlement finalisation will result in '${val.data.entry.participant.name}' being disabled. I.e. they will no-longer be able to transact.`
       );
     case SettlementReportValidationKind.AccountsNotPresentInReport: {
       // prettier-ignore
@@ -574,8 +576,8 @@ export function explainSettlementReportValidationKind(kind: SettlementReportVali
       );
     case SettlementReportValidationKind.NegativeOrZeroBalance:
       return (
-        'The balance in the settlement finalization report is expected to be a positive value. ' +
-        'Zero or negative value results in unexpected balance updates and the account may not be operational.'
+        'The balance in the settlement finalization report is expected to be a positive or zero value. ' +
+        'A negative value means that DFSP is insolvent and must be disabled.'
       );
     case SettlementReportValidationKind.AccountsNotPresentInReport:
       return 'The settlement finalization report does not contain all report present in the settlement.';
@@ -727,7 +729,16 @@ export const validationFunctions = {
       .forEach(({ entry, settlementAccount }) => {
         const expectedBalance = -settlementAccount.value - entry.transferAmount;
         const reportBalance = entry.balance;
-        if (!equal(expectedBalance, reportBalance)) {
+        if (reportBalance <= 0) {
+          result.add({
+            kind: SettlementReportValidationKind.NegativeOrZeroBalance,
+            data: {
+              entry,
+              reportBalance,
+              account: settlementAccount,
+            },
+          });
+        } else if (!equal(expectedBalance, reportBalance)) {
           result.add({
             kind: SettlementReportValidationKind.BalanceNotAsExpected,
             data: {
@@ -735,16 +746,6 @@ export const validationFunctions = {
               reportBalance,
               expectedBalance,
               transferAmount: entry.transferAmount,
-              account: settlementAccount,
-            },
-          });
-        }
-        if (reportBalance <= 0) {
-          result.add({
-            kind: SettlementReportValidationKind.NegativeOrZeroBalance,
-            data: {
-              entry,
-              reportBalance,
               account: settlementAccount,
             },
           });
