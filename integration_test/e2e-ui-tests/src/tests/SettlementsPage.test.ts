@@ -182,7 +182,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
     (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -233,7 +233,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -341,7 +341,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -392,7 +392,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -500,7 +500,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -551,7 +551,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -660,7 +660,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -711,7 +711,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -820,7 +820,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -871,7 +871,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -980,7 +980,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -1031,7 +1031,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -1140,7 +1140,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -1191,7 +1191,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.meta({
@@ -1300,7 +1300,7 @@ test.meta({
   await t.click(SettlementFinalizingModal.processButton);
 
   // Processing can take some time, use a high timeout
-  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 60000 }));
+  await t.click(Selector(SettlementFinalizingModal.closeButton, { timeout: 100000 }));
   const rowsAfter = await SettlementsPage.getResultRows();
   const settlementRowAfter = await Promise.any(rowsAfter.map(
       (r) => r.id.innerText.then(id => Number(id) === settlement.id ? Promise.resolve(r) : Promise.reject()),
@@ -1351,7 +1351,7 @@ test.meta({
   const dfspNames = await Promise.all(settlementDetailRows.map((r: WindowRow) => r.dfsp.innerText));
   await t.expect(dfspNames.includes(participants[0].name)).ok()
   await t.expect(dfspNames.includes(participants[1].name)).ok()
-  await t.click(SettlementDetailModal.closeButton)
+  await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
 test.skip.meta({
