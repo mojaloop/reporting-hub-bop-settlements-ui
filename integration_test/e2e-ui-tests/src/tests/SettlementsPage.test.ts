@@ -46,8 +46,8 @@ fixture `Settlements Feature`
   })
   .beforeEach(async (t) => {
     const accounts: protocol.AccountInitialization[] = [
-      { currency: CURRENCY, initial_position: '0', ndc: 10000 },
-      { currency: CURRENCY, initial_position: '0', ndc: 10000 },
+      { currency: CURRENCY, initial_position: '100', ndc: 10000 },
+      { currency: CURRENCY, initial_position: '100', ndc: 10000 },
     ];
     const participants = await t.fixtureCtx.cli.createParticipants(accounts);
 
@@ -249,7 +249,7 @@ test.meta({
     msg_sender: participants[1].name,
     msg_recipient: participants[0].name,
     currency: CURRENCY,
-    amount: '10',
+    amount: '100',
     transfer_id: uuidv4(),
   }];
   await cli.completeTransfers(transfers1);
@@ -278,8 +278,8 @@ test.meta({
   // Get the initiation report, "simulate" some balances returned by the settlement bank, save it
   // as the finalization report.
   const participantBalances = new Map();
-  participantBalances.set(participants[0].name, 10);
-  participantBalances.set(participants[1].name, -10);
+  participantBalances.set(participants[0].name, 300);
+  participantBalances.set(participants[1].name, -100);
   const initiationReport =
       await reportingApi.getSettlementInitiationReport(reportBasePath, settlement.id);
   const wb = new ExcelJS.Workbook();
@@ -437,8 +437,8 @@ test.meta({
   // Get the initiation report, "simulate" some balances returned by the settlement bank, save it
   // as the finalization report.
   const participantBalances = new Map();
-  participantBalances.set(participants[0].name, 10);
-  participantBalances.set(participants[1].name, 0);
+  participantBalances.set(participants[0].name, 110);
+  participantBalances.set(participants[1].name, 100);
   const initiationReport =
       await reportingApi.getSettlementInitiationReport(reportBasePath, settlement.id);
   const wb = new ExcelJS.Workbook();
