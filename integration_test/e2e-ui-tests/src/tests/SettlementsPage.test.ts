@@ -80,7 +80,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  let settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  let settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   // Run a transfer so the settlement window can be closed
@@ -254,7 +254,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -412,7 +412,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -570,7 +570,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -728,7 +728,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -886,7 +886,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -1044,7 +1044,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -1180,7 +1180,7 @@ test.meta({
   await t.click(Selector(SettlementDetailModal.closeButton, { timeout: 60000 }))
 });
 
-test.meta({
+test.skip.meta({
   ID: '',
   STORY: 'MMD-1989',
   description:
@@ -1201,7 +1201,7 @@ test.meta({
   const openWindows1 = await cli.getSettlementWindows({ ...nullWindowQueryParams, state: "OPEN" });
   await t.expect(openWindows1.length).eql(1, 'Expected only a single open window');
 
-  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1);
+  const settlementWindowState = await closeSettlementWindowWaitAndRetry(openWindows1[0].settlementWindowId);
   await t.expect(settlementWindowState).eql('CLOSED', `Expected settlementWindowState to be CLOSED settlementWindowId=${openWindows1[0].settlementWindowId}`);
 
   const settlementWindowIds = [
@@ -1350,10 +1350,10 @@ test.skip.meta({
   },
 );
 
-async function closeSettlementWindowWaitAndRetry(openWindows1: protocol.SettlementWindow[]) {
+async function closeSettlementWindowWaitAndRetry(settlementWindowId: number) {
   await settlementApi.closeSettlementWindow(
     settlementsBasePath,
-    openWindows1[0].settlementWindowId,
+    settlementWindowId,
     'Integration test'
   );
   const settlementWindowState = await retry(
@@ -1361,7 +1361,7 @@ async function closeSettlementWindowWaitAndRetry(openWindows1: protocol.Settleme
       // if anything throws, we retry
       const res = await settlementApi.getSettlementWindow(
         settlementsBasePath,
-        openWindows1[0].settlementWindowId
+        settlementWindowId
       );
       if ('CLOSED' !== res.state) {
         throw new Error();
