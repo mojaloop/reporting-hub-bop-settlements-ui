@@ -3,7 +3,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { t } from 'testcafe';
 
 // TODO: get this data from the application? Instead of using this data, use the actual text
-// displayed to the user, as the user would?
+// displayed to the user, as the user would? 
 export enum SettlementStatus {
   PendingSettlement    = 'PENDING_SETTLEMENT',
   PsTransfersRecorded  = 'PS_TRANSFERS_RECORDED',
@@ -71,6 +71,7 @@ export const SettlementFinalizingModal = {
   increaseNdcCheckbox: ReactSelector(`${settlementFinalizingModalRootReactSelector} ModalContent`).find('label').withText('Increase net debit caps').find('input'),
   decreaseNdcCheckbox: ReactSelector(`${settlementFinalizingModalRootReactSelector} ModalContent`).find('label').withText('Decrease net debit caps').find('input'),
 };
+
 
 const settlementFinalizationWarningModalRoot = ReactSelector(`${settlementFinalizingModalRootReactSelector} ModalContent Modal`);
 export const SettlementFinalizationWarningModal = {

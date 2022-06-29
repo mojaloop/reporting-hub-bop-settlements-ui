@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 import { strict as assert } from 'assert';
 import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'utils/api';
@@ -155,7 +156,7 @@ function* processAdjustments({
     // If the settlement account state is already past the target state, then we'll do nothing
     // and exit here.
     if (statePosition >= newStatePosition) {
-      break;
+      continue;
     }
     if (
       (adjustment.dfspInsolvement && adjustment.currentLimit.value > 0) ||
@@ -182,7 +183,7 @@ function* processAdjustments({
             request,
           },
         });
-        break;
+        continue;
       }
     }
 
@@ -211,9 +212,9 @@ function* processAdjustments({
             request,
           },
         });
-        break;
+        continue;
       }
-      break;
+      continue;
     }
 
     if (adjustment.amount > 0) {
@@ -244,7 +245,7 @@ function* processAdjustments({
             request,
           },
         });
-        break;
+        continue;
       }
     } else {
       // Make the call to process funds out, then poll the balance until it's reduced
@@ -276,7 +277,7 @@ function* processAdjustments({
             request: fundsOutPrepareReserveRequest,
           },
         });
-        break;
+        continue;
       }
       const fundsOutCommitRequest = {
         participantName: adjustment.participant.name,
@@ -300,7 +301,7 @@ function* processAdjustments({
             request: fundsOutCommitRequest,
           },
         });
-        break;
+        continue;
       }
     }
 
