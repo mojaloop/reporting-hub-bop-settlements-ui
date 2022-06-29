@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.17](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.16...v0.0.17) (2022-06-29)
+
+
+### Bug Fixes
+
+* ci github release ([#32](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/32)) ([05578f9](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/05578f9b57844cbcd44a77951b6ff489a5e7ece9))
+
 ### [0.0.16](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.15...v0.0.16) (2022-06-29)
 
 
