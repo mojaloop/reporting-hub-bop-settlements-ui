@@ -136,7 +136,9 @@ const SettlementWindowModal: FC<SettlementWindowModalProps> = ({
     content = <Spinner center />;
   } else if (error) {
     title = 'Failed Settlement Submit';
-    content = <MessageBox kind="danger">There was an error settling the windows</MessageBox>;
+    content = (
+      <MessageBox kind="danger">There was an error settling the windows - {error}</MessageBox>
+    );
   } else {
     title = 'Settlement Submitted';
     content = (
