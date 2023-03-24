@@ -66,7 +66,7 @@ jobs:
     - name: Wait for deployment readiness
       # Skaffold is supposed to do this, but for whatever reason, does not. At the time of writing,
       # investigating this was not a priority.
-      run: timeout 900 kubectl wait --for=condition=Ready pod --all --timeout=900s
+      run: timeout 1500 kubectl wait --for=condition=Ready pod --all --timeout=1200s
 
     - name: Port-forward the portal frontend ingress
       run: kubectl port-forward -n ingress-nginx --address 0.0.0.0 svc/ingress-nginx-controller 3000:80 &
