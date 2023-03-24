@@ -76,10 +76,15 @@ function* fetchSettlementWindows() {
         ) {
           return [];
         }
-        assert(
-          resp.status !== 403,
-          `Failed to retrieve settlement window data - ${resp.data.error.message}`,
-        );
+        if (resp.status === 403) {
+          if (resp.data?.error?.message) {
+            throw new Error(
+              `Failed to retrieve settlement window data - ${JSON.stringify(
+                resp.data?.error?.message,
+              )}`,
+            );
+          }
+        }
         assert(
           resp.status >= 200 && resp.status < 300,
           `Failed to retrieve settlement window data`,
@@ -140,11 +145,16 @@ function* settleWindows() {
         settlementWindows: windows.map((w) => ({ id: w.settlementWindowId })),
       },
     });
+    if (settlementResponse.status === 403) {
+      if (settlementResponse.data?.error?.message) {
+        throw new Error(
+          `Failed to retrieve settlement window data - ${JSON.stringify(
+            settlementResponse.data?.error?.message,
+          )}`,
+        );
+      }
+    }
     assert.equal(settlementResponse.status, 200, 'Unable to settle settlement window');
-    assert(
-      settlementResponse.status !== 403,
-      `Failed to retrieve settlement window data - ${settlementResponse.data.error.message}`,
-    );
     const settlement = settlementResponse.data;
     // @ts-ignore
     const settlementRecordedResult = yield call(
@@ -193,15 +203,21 @@ function* closeSettlementWindow(action: PayloadAction<SettlementWindow>) {
       },
     });
 
+    if (response.status === 403) {
+      if (response.data?.error?.message) {
+        throw new Error(
+          `Failed to retrieve settlement window data - ${JSON.stringify(
+            response.data?.error?.message,
+          )}`,
+        );
+      }
+    }
+
     if (response.status !== 200) {
       const info = response.data.errorInformation;
       const msg = !info ? '' : ` due to error ${info.errorCode}: "${info.errorDescription}"`;
       throw new Error(`Unable to Close Window${msg}`);
     }
-    assert(
-      response.status !== 403,
-      `Failed to retrieve settlement window data - ${response.data.error.message}`,
-    );
 
     yield put(setCloseSettlementWindowFinished());
     yield put(requestSettlementWindows());
