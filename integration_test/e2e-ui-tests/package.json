@@ -25,7 +25,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "testcafe ${BROWSER_TCAFE:-chrome}",
-    "test:headless": "testcafe ${BROWSER_TCAFE:-chrome:headless}"
+    "test:headless": "testcafe ${BROWSER_TCAFE:-chrome:headless} --disable-screenshots --dev"
   },
   "author": "sridevi.miriyala@modusbox.com",
   "devDependencies": {
