@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.18](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.17...v0.0.18) (2023-04-11)
+
+
+### Bug Fixes
+
+* **mojaloop/#2652:** update sagas to handle rbac error messages ([#50](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/50)) ([d4625e2](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/d4625e235d6e9ee2f957d832727676b6928f2fbf)), closes [mojaloop/#2652](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/2652) [mojaloop/#2652](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/2652) [/github.com/mojaloop/reporting-hub-bop-settlements-ui/pull/50#issuecomment-1499799235](https://github.com/mojaloop//github.com/mojaloop/reporting-hub-bop-settlements-ui/pull/50/issues/issuecomment-1499799235)
+
 ### [0.0.17](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.16...v0.0.17) (2022-06-29)
 
 
