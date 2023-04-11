@@ -134,7 +134,11 @@ const Settlements: FC<SettlementsProps> = ({
 }) => {
   let content = null;
   if (settlementsError) {
-    content = <MessageBox kind="danger">there was an error with the settlements</MessageBox>;
+    content = (
+      <MessageBox kind="danger">
+        There was an error with the settlements - {settlementsError}
+      </MessageBox>
+    );
   } else if (isSettlementsPending) {
     content = <Spinner center />;
   } else {

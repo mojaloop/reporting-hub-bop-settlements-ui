@@ -76,6 +76,15 @@ function* fetchSettlementWindows() {
         ) {
           return [];
         }
+        if (resp.status === 403) {
+          if (resp.data?.error?.message) {
+            throw new Error(
+              `Failed to retrieve settlement window data - ${JSON.stringify(
+                resp.data?.error?.message,
+              )}`,
+            );
+          }
+        }
         assert(
           resp.status >= 200 && resp.status < 300,
           `Failed to retrieve settlement window data`,
@@ -136,8 +145,16 @@ function* settleWindows() {
         settlementWindows: windows.map((w) => ({ id: w.settlementWindowId })),
       },
     });
+    if (settlementResponse.status === 403) {
+      if (settlementResponse.data?.error?.message) {
+        throw new Error(
+          `Failed to retrieve settlement window data - ${JSON.stringify(
+            settlementResponse.data?.error?.message,
+          )}`,
+        );
+      }
+    }
     assert.equal(settlementResponse.status, 200, 'Unable to settle settlement window');
-
     const settlement = settlementResponse.data;
     // @ts-ignore
     const settlementRecordedResult = yield call(
@@ -185,6 +202,16 @@ function* closeSettlementWindow(action: PayloadAction<SettlementWindow>) {
         reason: 'Business operations portal request',
       },
     });
+
+    if (response.status === 403) {
+      if (response.data?.error?.message) {
+        throw new Error(
+          `Failed to retrieve settlement window data - ${JSON.stringify(
+            response.data?.error?.message,
+          )}`,
+        );
+      }
+    }
 
     if (response.status !== 200) {
       const info = response.data.errorInformation;
