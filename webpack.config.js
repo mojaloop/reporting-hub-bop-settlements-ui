@@ -81,7 +81,7 @@ module.exports = {
       '/reporting-api': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `reporting-hub-bop-api-svc` service
-        target: 'http://localhost:3080',
+        target: 'http://localhost:9401',
         pathRewrite: { '^/reporting-api': '' },
         secure: false,
       },
