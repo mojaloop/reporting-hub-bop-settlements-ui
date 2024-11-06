@@ -24,7 +24,7 @@ jobs:
     - name: Set up Kubeconform
       uses: bmuschko/setup-kubeconform@v1
     - name: Validate integration test manifest
-      run: kustomize build integration_test | kubeconform -strict -kubernetes-version 1.17.9
+      run: kustomize build integration_test | kubeconform -strict -kubernetes-version 1.29
 
   integration_test:
     timeout-minutes: 45
