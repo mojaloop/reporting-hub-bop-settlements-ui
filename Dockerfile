@@ -1,4 +1,4 @@
-FROM node:14.18.1-alpine as builder
+FROM node:16.16.0-alpine as builder
 WORKDIR /opt/reporting-hub-bop-settlements-ui
 ENV PATH /opt/reporting-hub-bop-settlements-ui/node_modules/.bin:$PATH
 
