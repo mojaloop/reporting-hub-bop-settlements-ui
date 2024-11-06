@@ -89,14 +89,14 @@ jobs:
 
     - name: Archive screenshots
       if: ${{ always() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: failure-screenshots
         path: 'integration_test/e2e-ui-tests/screenshots/'
 
     - name: Archive settlement finalization reports
       if: ${{ always() }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: finalization-reports
         path: '**/settlement-finalization-report*.xlsx'
