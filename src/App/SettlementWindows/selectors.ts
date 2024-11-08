@@ -1,5 +1,6 @@
 import { State } from 'store/types';
 
+// Getters for the SettlementWindows state
 export const getSelectedSettlementWindow = (state: State) =>
   state.settlementWindows.selectedSettlementWindow;
 export const getSettlementWindows = (state: State) => state.settlementWindows.settlementWindows;

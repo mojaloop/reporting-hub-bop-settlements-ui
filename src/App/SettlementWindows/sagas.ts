@@ -37,6 +37,7 @@ import {
 } from './selectors';
 import * as helpers from './helpers';
 
+// Sagas are generator functions that watch for specific actions and perform asynchronous operations.
 function* fetchSettlementWindows() {
   try {
     // @ts-ignore

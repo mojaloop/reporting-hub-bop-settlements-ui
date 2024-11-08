@@ -318,6 +318,7 @@ export type ParticipantsAccounts = Map<
 >;
 
 export interface SettlementFinalizeData {
+  settlement: Settlement;
   participantsLimits: Map<FspName, Map<Currency, Limit>>;
   accountsParticipants: AccountsParticipants;
   participantsAccounts: ParticipantsAccounts;

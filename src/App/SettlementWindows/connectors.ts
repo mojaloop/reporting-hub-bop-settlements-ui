@@ -5,6 +5,9 @@ import * as selectors from './selectors';
 import * as actions from './actions';
 import { SettlementWindow, DateRanges, FilterValue } from './types';
 
+// React-redux is a library to bind react together with redux.
+// Every state change of your redux store should be communicated to the react components.
+// This is done by using react-redux connect function.
 const mapStateProps = (state: State) => ({
   selectedSettlementWindow: selectors.getSelectedSettlementWindow(state),
   settlementWindows: selectors.getSettlementWindows(state),

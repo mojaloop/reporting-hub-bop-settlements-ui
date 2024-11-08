@@ -26,6 +26,18 @@ import {
   SET_SELECTED_SETTLEMENT_MODEL,
 } from './types';
 
+// Functions that create actions to update the state.
+// We use @reduxjs/toolkit to save use some boilerplate code.
+// const increment = createAction<number | undefined>('counter/increment')
+
+// let action = increment()
+// { type: 'counter/increment' }
+
+// action = increment(3)
+// returns { type: 'counter/increment', payload: 3 }
+
+// console.log(`The action type is: ${increment.type}`)
+// 'The action type is: counter/increment'
 export const resetSettlementWindows = createAction(RESET_SETTLEMENT_WINDOWS);
 export const requestSettlementWindows = createAction(REQUEST_SETTLEMENT_WINDOWS);
 export const setSettlementWindows = createAction<SettlementWindow[]>(SET_SETTLEMENT_WINDOWS);

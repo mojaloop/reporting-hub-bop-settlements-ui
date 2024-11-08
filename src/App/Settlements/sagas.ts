@@ -23,23 +23,23 @@ import {
   SELECT_SETTLEMENTS_FILTER_DATE_RANGE,
   SELECT_SETTLEMENTS_FILTER_DATE_VALUE,
   SET_SETTLEMENTS_FILTER_VALUE,
-  VALIDATE_SETTLEMENT_REPORT,
+  // VALIDATE_SETTLEMENT_REPORT,
   Settlement,
   SettlementParticipant,
   SettlementParticipantAccount,
-  SettlementReport,
-  SettlementReportValidationKind,
+  // SettlementReport,
+  // SettlementReportValidationKind,
   SettlementStatus,
 } from './types';
 import {
   setFinalizeSettlementError,
   setSettlementFinalizingInProgress,
   setFinalizingSettlement,
-  setSettlementAdjustments,
-  setSettlementReportValidationInProgress,
+  // setSettlementAdjustments,
+  // setSettlementReportValidationInProgress,
   setSettlements,
-  setSettlementReportValidationErrors,
-  setSettlementReportValidationWarnings,
+  // setSettlementReportValidationErrors,
+  // setSettlementReportValidationWarnings,
   setSettlementsError,
   requestSettlements,
 } from './actions';
@@ -47,9 +47,10 @@ import {
   getFinalizeProcessFundsInOut,
   getFinalizeProcessNdcDecreases,
   getFinalizeProcessNdcIncreases,
-  getFinalizingSettlement,
-  getSettlementAdjustments,
-  getSettlementReport,
+  // getFinalizingSettlement,
+  // getSelectedSettlement,
+  // getSettlementAdjustments,
+  // getSettlementReport,
   getSettlementsFilters,
 } from './selectors';
 import {
@@ -59,7 +60,7 @@ import {
   mapApiToModel,
   SettlementFinalizeData,
   finalizeDataUtils,
-  validateReport,
+  // validateReport,
 } from './helpers';
 
 const generateUlid =
@@ -109,11 +110,12 @@ function* processAdjustments({
   // (working) code to do so was not considered a priority.
 
   // @ts-ignore
-  const report: SettlementReport = yield select(getSettlementReport);
+  // const settlement: Settlement = yield select(getSelectedSettlement);
+  // const report: SettlementReport = yield select(getSettlementReport);
   const results: FinalizeSettlementProcessAdjustmentsError[] = [];
   for (let i = 0; i < adjustments.length; i++) {
     const adjustment = adjustments[i];
-
+    /*
     if (adjustment.dfspInsolvement) {
       // Disable participant account
       const positionAccountId = adjustment.participant.accounts.find(
@@ -142,7 +144,7 @@ function* processAdjustments({
         break;
       }
     }
-
+    */
     const stateOrder = [
       SettlementStatus.Aborted,
       SettlementStatus.PendingSettlement,
@@ -165,7 +167,6 @@ function* processAdjustments({
       continue;
     }
     if (
-      (adjustment.dfspInsolvement && adjustment.currentLimit.value > 0) ||
       (adjustNdc.increases && adjustment.currentLimit.value < adjustment.settlementBankBalance) ||
       (adjustNdc.decreases && adjustment.currentLimit.value > adjustment.settlementBankBalance)
     ) {
@@ -229,8 +230,8 @@ function* processAdjustments({
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
         body: {
-          externalReference: report?.reportFileName,
           action: 'recordFundsIn',
+          externalReference: `BOP settlement ID ${settlement.id}`,
           reason: description,
           amount: {
             amount: Math.abs(adjustment.amount),
@@ -260,8 +261,8 @@ function* processAdjustments({
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
         body: {
-          externalReference: report?.reportFileName,
           action: 'recordFundsOutPrepareReserve',
+          externalReference: `BOP settlement ID ${settlement.id}`,
           reason: description,
           amount: {
             amount: Math.abs(adjustment.amount),
@@ -379,12 +380,13 @@ function* processAdjustments({
   return results;
 }
 
-function* collectSettlementFinalizeData(report: SettlementReport, settlement: Settlement) {
+function* collectSettlementFinalizeData(settlement: Settlement) {
   // TODO: parallelize requests in this function. Probably by throwing the function out entirely
   // and using an async version with Promise.all. That lets us reuse the code elsewhere, and means
   // we don't have to put up with the limitations of redux-saga.
   // Why get limits? We need to get limits before we can set limits, because `alarmPercentage` is a
   // required field when we set a limit, and we don't want to change that here.
+  // const report: SettlementReport = yield select(getSettlementReport);
   const {
     transformParticipantsLimits,
     ensureResponse,
@@ -415,9 +417,9 @@ function* collectSettlementFinalizeData(report: SettlementReport, settlement: Se
   const accountsPositions: Map<AccountId, AccountWithPosition> = getAccountsPositions(
     // @ts-ignore
     (yield all(
-      report.entries.map(function* getParticipantAccount({ positionAccountId }) {
-        const participantName = accountsParticipants.get(positionAccountId)?.participant.name;
-        assert(participantName, `Couldn't find participant for account ${positionAccountId}`);
+      settlement.participants.map(function* getParticipantAccount({ accounts }) {
+        const participantName = accountsParticipants.get(accounts[0].id)?.participant.name;
+        assert(participantName, `Couldn't find participant for account ${accounts[0].id}`);
         const result = yield call(api.participantAccounts.read, { participantName });
         return [participantName, result];
       }),
@@ -431,6 +433,7 @@ function* collectSettlementFinalizeData(report: SettlementReport, settlement: Se
   const settlementParticipants = getSettlementParticipants(settlement.participants);
 
   return {
+    settlement,
     participantsLimits,
     accountsParticipants,
     participantsAccounts,
@@ -440,28 +443,26 @@ function* collectSettlementFinalizeData(report: SettlementReport, settlement: Se
   };
 }
 
-function buildAdjustments(
-  report: SettlementReport,
-  {
-    participantsLimits,
-    accountsParticipants,
-    participantsAccounts,
-    accountsPositions,
-    settlementParticipantAccounts,
-    settlementParticipants,
-  }: SettlementFinalizeData,
-): Adjustment[] {
-  return report.entries.map(({ positionAccountId, balance: settlementBankBalance }): Adjustment => {
-    const accountParticipant = accountsParticipants.get(positionAccountId);
+function buildAdjustments({
+  settlement,
+  participantsLimits,
+  accountsParticipants,
+  participantsAccounts,
+  accountsPositions,
+  settlementParticipantAccounts,
+  settlementParticipants,
+}: SettlementFinalizeData): Adjustment[] {
+  return settlement.participants.map((part): Adjustment => {
+    const accountParticipant = accountsParticipants.get(part.accounts[0].id);
     assert(
       accountParticipant !== undefined,
-      `Failed to retrieve participant for account ${positionAccountId}`,
+      `Failed to retrieve participant for account ${part.accounts[0].id}`,
     );
     const { participant } = accountParticipant;
-    const positionAccount = accountsPositions.get(positionAccountId);
+    const positionAccount = accountsPositions.get(part.accounts[0].id);
     assert(
       positionAccount !== undefined,
-      `Failed to retrieve position for account ${positionAccountId}`,
+      `Failed to retrieve position for account ${part.accounts[0].id}`,
     );
     const { currency } = positionAccount;
     const currentLimit = participantsLimits.get(participant.name)?.get(currency);
@@ -494,28 +495,28 @@ function buildAdjustments(
       `Failed to retrieve position for account ${settlementAccountId}`,
     );
 
-    const settlementParticipantAccount = settlementParticipantAccounts.get(positionAccountId);
+    const settlementParticipantAccount = settlementParticipantAccounts.get(part.accounts[0].id);
     assert(
       settlementParticipantAccount !== undefined,
-      `Failed to retrieve settlement participant account for account ${positionAccountId}`,
+      `Failed to retrieve settlement participant account for account ${part.accounts[0].id}`,
     );
 
     const settlementParticipant = settlementParticipants.get(settlementParticipantAccount.id);
     assert(
       settlementParticipant !== undefined,
-      `Failed to retrieve settlement participant for account ${positionAccountId}`,
+      `Failed to retrieve settlement participant for account ${part.accounts[0].id}`,
     );
-
-    const dfspInsolvement = settlementBankBalance < 0;
-    let amount;
-    if (dfspInsolvement) {
-      amount = -switchBalance;
-    } else {
-      amount = settlementBankBalance - switchBalance;
-    }
+    const amount = -switchBalance;
+    // const dfspInsolvement = settlementBankBalance < 0;
+    // let amount;
+    // if (dfspInsolvement) {
+    //   amount = -switchBalance;
+    // } else {
+    //   amount = settlementBankBalance - switchBalance;
+    // }
 
     return {
-      settlementBankBalance,
+      settlementBankBalance: 1000000,
       participant,
       amount,
       positionAccount,
@@ -523,44 +524,18 @@ function buildAdjustments(
       currentLimit,
       settlementParticipantAccount,
       settlementParticipant,
-      dfspInsolvement,
     };
   });
 }
 
-function* validateSettlementReport(): any {
+function* finalizeSettlement(action: PayloadAction<Settlement>) {
   // TODO: timeout
-  const [settlement, report] = yield all([
-    select(getFinalizingSettlement),
-    select(getSettlementReport),
-  ]);
-
-  // TODO: much of this data would be useful throughout the portal, perhaps hoist it up and
-  // make it available everywhere. This might also mean we can validate the report more when we
-  // ingest it.
+  const settlement = action.payload;
   const finalizeData: SettlementFinalizeData = yield call(
     collectSettlementFinalizeData,
-    report,
     settlement,
   );
-
-  const errorKinds = [
-    SettlementReportValidationKind.AccountIsIncorrectType,
-    SettlementReportValidationKind.ExtraAccountsPresentInReport,
-    SettlementReportValidationKind.InvalidAccountId,
-    SettlementReportValidationKind.NewBalanceAmountInvalid,
-    SettlementReportValidationKind.ReportIdentifiersNonMatching,
-    SettlementReportValidationKind.SettlementIdNonMatching,
-    SettlementReportValidationKind.TransferAmountInvalid,
-  ];
-  const reportValidations = validateReport(report, finalizeData, settlement);
-  const errors = [...reportValidations.values()].filter((val) => errorKinds.includes(val.kind));
-  const warnings = [...reportValidations.values()].filter((val) => !errorKinds.includes(val.kind));
-  yield put(setSettlementReportValidationErrors(errors));
-  yield put(setSettlementReportValidationWarnings(warnings));
-
-  const adjustments = buildAdjustments(report, finalizeData);
-
+  const adjustments = buildAdjustments(finalizeData);
   const [debits, credits] = adjustments.reduce(
     ([dr, cr], adj) =>
       adj.settlementParticipantAccount.netSettlementAmount.amount < 0
@@ -568,17 +543,6 @@ function* validateSettlementReport(): any {
         : [dr, [...cr, adj]],
     [[], []],
   );
-
-  yield put(setSettlementReportValidationInProgress(false));
-  yield put(
-    setSettlementAdjustments({ debits: [...debits.values()], credits: [...credits.values()] }),
-  );
-}
-
-function* finalizeSettlement(action: PayloadAction<Settlement>) {
-  // TODO: timeout
-  const settlement = action.payload;
-  const { debits, credits } = yield select(getSettlementAdjustments);
   try {
     // Process in this order:
     // 0. ensure all settlement participant accounts are in PS_TRANSFERS_RESERVED
@@ -932,15 +896,15 @@ export function* FetchSettlementAfterFiltersChangeSaga(): Generator {
   );
 }
 
-export function* ValidateSettlementReportSaga(): Generator {
-  yield takeLatest(VALIDATE_SETTLEMENT_REPORT, validateSettlementReport);
-}
+// export function* ValidateSettlementReportSaga(): Generator {
+//   yield takeLatest(VALIDATE_SETTLEMENT_REPORT, validateSettlementReport);
+// }
 
 export default function* rootSaga(): Generator {
   yield all([
     FetchSettlementsSaga(),
     FetchSettlementAfterFiltersChangeSaga(),
     FinalizeSettlementSaga(),
-    ValidateSettlementReportSaga(),
+    // ValidateSettlementReportSaga(),
   ]);
 }

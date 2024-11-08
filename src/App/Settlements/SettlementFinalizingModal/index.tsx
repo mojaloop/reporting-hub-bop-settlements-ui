@@ -29,23 +29,23 @@ function displaySettlementReportValidation(v: SettlementReportValidation) {
 }
 
 const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
-  settlementReport,
+  // settlementReport,
   settlementFinalizingInProgress,
-  settlementReportValidationInProgress,
+  // settlementReportValidationInProgress,
   finalizingSettlement,
   finalizingSettlementError,
   onModalCloseClick,
   onProcessButtonClick,
-  onValidateButtonClick,
+  // onValidateButtonClick,
   // onSelectSettlementReport,
   // onSettlementReportProcessingError,
   settlementReportError,
-  onSetNetDebitCapIncreasesChange,
-  onSetNetDebitCapDecreasesChange,
-  onSetFundsInOutChange,
-  processFundsInOut,
-  processNdcIncreases,
-  processNdcDecreases,
+  // onSetNetDebitCapIncreasesChange,
+  // onSetNetDebitCapDecreasesChange,
+  // onSetFundsInOutChange,
+  // processFundsInOut,
+  // processNdcIncreases,
+  // processNdcDecreases,
   settlementReportValidationErrors,
   settlementReportValidationWarnings,
   onClearSettlementReportWarnings,
@@ -189,6 +189,7 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
     </ErrorBox>
   ) : (
     <div>
+      {/*
       <div>Please select a settlement finalization report to process:</div>
       <br />
       <label htmlFor="set-process-funds-in-out">
@@ -238,7 +239,9 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
           }
         }}
       />
+
       {settlementReportValidationErrors?.length === 0 ? <>&nbsp;✅</> : <></>}
+      */}
       <br />
       <Button
         pending={settlementFinalizingInProgress}
@@ -246,17 +249,10 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
         noFill
         size="s"
         label="Process"
-        disabled={
-          settlementReport === null ||
-          settlementFinalizingInProgress ||
-          settlementReportValidationErrors === null ||
-          finalizingSettlement.state === 'SETTLED'
-        }
+        disabled={settlementFinalizingInProgress || finalizingSettlement.state === 'SETTLED'}
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
-          if (settlementReport !== null) {
-            onProcessButtonClick(finalizingSettlement);
-          }
+          onProcessButtonClick(finalizingSettlement);
         }}
       />
       <hr />

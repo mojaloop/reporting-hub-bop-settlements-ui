@@ -89,7 +89,7 @@ export interface Adjustment {
   currentLimit: Limit;
   settlementParticipantAccount: SettlementParticipantAccount;
   settlementParticipant: SettlementParticipant;
-  dfspInsolvement: boolean;
+  // dfspInsolvement: boolean;
 }
 
 export interface LedgerParticipant {

@@ -51,6 +51,9 @@ const initialState: SettlementWindowsState = {
   settleSettlementWindowsError: null,
 };
 
+// Reducers are pure functions that handle state logic, accepting the initial
+// state and action type to update and return the state, facilitating changes
+// in React view components.
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(resetSettlementWindows, () => ({
