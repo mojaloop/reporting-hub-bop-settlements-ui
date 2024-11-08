@@ -29,23 +29,12 @@ function displaySettlementReportValidation(v: SettlementReportValidation) {
 }
 
 const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
-  // settlementReport,
   settlementFinalizingInProgress,
-  // settlementReportValidationInProgress,
   finalizingSettlement,
   finalizingSettlementError,
   onModalCloseClick,
   onProcessButtonClick,
-  // onValidateButtonClick,
-  // onSelectSettlementReport,
-  // onSettlementReportProcessingError,
   settlementReportError,
-  // onSetNetDebitCapIncreasesChange,
-  // onSetNetDebitCapDecreasesChange,
-  // onSetFundsInOutChange,
-  // processFundsInOut,
-  // processNdcIncreases,
-  // processNdcDecreases,
   settlementReportValidationErrors,
   settlementReportValidationWarnings,
   onClearSettlementReportWarnings,
@@ -189,60 +178,6 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
     </ErrorBox>
   ) : (
     <div>
-      {/*
-      <div>Please select a settlement finalization report to process:</div>
-      <br />
-      <label htmlFor="set-process-funds-in-out">
-        <input
-          id="set-process-funds-in-out"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processFundsInOut}
-          onChange={onSetFundsInOutChange}
-        />
-        Set liquidity account balance to balance values in settlement finalization report
-      </label>
-      <br />
-      <label htmlFor="set-process-net-debit-cap-decreases">
-        <input
-          id="set-process-net-debit-cap-decreases"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processNdcDecreases}
-          onChange={onSetNetDebitCapDecreasesChange}
-        />
-        <i>Decrease</i> net debit caps to balance values in settlement finalization report
-      </label>
-      <br />
-      <label htmlFor="set-process-net-debit-cap-increases">
-        <input
-          id="set-process-net-debit-cap-increases"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processNdcIncreases}
-          onChange={onSetNetDebitCapIncreasesChange}
-        />
-        <i>Increase</i> net debit caps to balance values in settlement finalization report
-      </label>
-      <br />
-      <Button
-        pending={settlementReportValidationInProgress}
-        kind="secondary"
-        noFill
-        size="s"
-        label="Validate"
-        disabled={settlementReport === null || settlementFinalizingInProgress}
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          e.stopPropagation();
-          if (settlementReport !== null) {
-            onValidateButtonClick();
-          }
-        }}
-      />
-
-      {settlementReportValidationErrors?.length === 0 ? <>&nbsp;✅</> : <></>}
-      */}
-      <br />
       <Button
         pending={settlementFinalizingInProgress}
         kind="secondary"

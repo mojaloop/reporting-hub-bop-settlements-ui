@@ -23,36 +23,20 @@ import {
   SELECT_SETTLEMENTS_FILTER_DATE_RANGE,
   SELECT_SETTLEMENTS_FILTER_DATE_VALUE,
   SET_SETTLEMENTS_FILTER_VALUE,
-  // VALIDATE_SETTLEMENT_REPORT,
   Settlement,
   SettlementParticipant,
   SettlementParticipantAccount,
-  // SettlementReport,
-  // SettlementReportValidationKind,
   SettlementStatus,
 } from './types';
 import {
   setFinalizeSettlementError,
   setSettlementFinalizingInProgress,
   setFinalizingSettlement,
-  // setSettlementAdjustments,
-  // setSettlementReportValidationInProgress,
   setSettlements,
-  // setSettlementReportValidationErrors,
-  // setSettlementReportValidationWarnings,
   setSettlementsError,
   requestSettlements,
 } from './actions';
-import {
-  getFinalizeProcessFundsInOut,
-  getFinalizeProcessNdcDecreases,
-  getFinalizeProcessNdcIncreases,
-  // getFinalizingSettlement,
-  // getSelectedSettlement,
-  // getSettlementAdjustments,
-  // getSettlementReport,
-  getSettlementsFilters,
-} from './selectors';
+import { getSettlementsFilters } from './selectors';
 import {
   ApiResponse,
   buildFiltersParams,
@@ -84,14 +68,10 @@ function* processAdjustments({
   settlement,
   adjustments,
   newState,
-  adjustNdc,
-  adjustLiquidityAccountBalance,
 }: {
   settlement: Settlement;
   adjustments: Adjustment[];
   newState: SettlementStatus;
-  adjustNdc: { increases: boolean; decreases: boolean };
-  adjustLiquidityAccountBalance: boolean;
 }) {
   // TODO:
   // We ideally wouldn't serialize these requests. Unfortunately, when we simultaneously process
@@ -166,38 +146,11 @@ function* processAdjustments({
     if (statePosition >= newStatePosition) {
       continue;
     }
-    if (
-      (adjustNdc.increases && adjustment.currentLimit.value < adjustment.settlementBankBalance) ||
-      (adjustNdc.decreases && adjustment.currentLimit.value > adjustment.settlementBankBalance)
-    ) {
-      const request = {
-        participantName: adjustment.participant.name,
-        body: {
-          currency: adjustment.positionAccount.currency,
-          limit: {
-            ...adjustment.currentLimit,
-            value: Math.max(adjustment.settlementBankBalance, 0),
-          },
-        },
-      };
-      const ndcResult: ApiResponse = yield call(api.participantLimits.update, request);
-      if (ndcResult.status !== 200) {
-        results.push({
-          type: FinalizeSettlementProcessAdjustmentsErrorKind.SET_NDC_FAILED,
-          value: {
-            adjustment,
-            error: ndcResult.data,
-            request,
-          },
-        });
-        continue;
-      }
-    }
 
     const description = `Business Operations Portal settlement ID ${settlement.id} finalization report processing`;
     // We can't make a transfer of zero amount, so we have nothing to do. In this case, we can
     // update the settlement participant account state and skip the remaining steps.
-    if (adjustment.amount === 0 || !adjustLiquidityAccountBalance) {
+    if (adjustment.amount === 0) {
       // Set the settlement participant account to the new state
       const request = {
         settlementId: settlement.id,
@@ -506,17 +459,12 @@ function buildAdjustments({
       settlementParticipant !== undefined,
       `Failed to retrieve settlement participant for account ${part.accounts[0].id}`,
     );
-    const amount = -switchBalance;
-    // const dfspInsolvement = settlementBankBalance < 0;
-    // let amount;
-    // if (dfspInsolvement) {
-    //   amount = -switchBalance;
-    // } else {
-    //   amount = settlementBankBalance - switchBalance;
-    // }
+
+    // Play around with amount and settlementBankBalance to observe what happens in the switch
+    const amount = positionAccount.value - switchBalance;
 
     return {
-      settlementBankBalance: 1000000,
+      settlementBankBalance: positionAccount.value,
       participant,
       amount,
       positionAccount,
@@ -621,22 +569,12 @@ function* finalizeSettlement(action: PayloadAction<Settlement>) {
       }
       // eslint-ignore-next-line: no-fallthrough
       case SettlementStatus.PsTransfersReserved: {
-        const adjustNdc = {
-          // @ts-ignore
-          increases: yield select(getFinalizeProcessNdcIncreases),
-          // @ts-ignore
-          decreases: yield select(getFinalizeProcessNdcDecreases),
-        };
-
         const debtorsErrors: FinalizeSettlementProcessAdjustmentsError[] = yield call(
           processAdjustments,
           {
             settlement,
             adjustments: [...debits.values()],
             newState: SettlementStatus.PsTransfersCommitted,
-            adjustNdc,
-            // @ts-ignore
-            adjustLiquidityAccountBalance: yield select(getFinalizeProcessFundsInOut),
           },
         );
 
@@ -654,9 +592,6 @@ function* finalizeSettlement(action: PayloadAction<Settlement>) {
             settlement,
             adjustments: [...credits.values()],
             newState: SettlementStatus.PsTransfersCommitted,
-            adjustNdc,
-            // @ts-ignore
-            adjustLiquidityAccountBalance: yield select(getFinalizeProcessFundsInOut),
           },
         );
 
@@ -881,7 +816,6 @@ function* fetchSettlementAfterFiltersChange(action: PayloadAction) {
   }
   yield put(requestSettlements());
 }
-
 export function* FetchSettlementAfterFiltersChangeSaga(): Generator {
   yield takeLatest(
     [
@@ -896,15 +830,10 @@ export function* FetchSettlementAfterFiltersChangeSaga(): Generator {
   );
 }
 
-// export function* ValidateSettlementReportSaga(): Generator {
-//   yield takeLatest(VALIDATE_SETTLEMENT_REPORT, validateSettlementReport);
-// }
-
 export default function* rootSaga(): Generator {
   yield all([
     FetchSettlementsSaga(),
     FetchSettlementAfterFiltersChangeSaga(),
     FinalizeSettlementSaga(),
-    // ValidateSettlementReportSaga(),
   ]);
 }

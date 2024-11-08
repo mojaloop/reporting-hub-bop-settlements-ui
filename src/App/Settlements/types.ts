@@ -355,9 +355,6 @@ export interface SettlementsState {
   finalizingSettlementError: null | FinalizeSettlementError;
   settlementReport: null | SettlementReport;
   settlementReportError: null | string;
-  finalizeProcessFundsInOut: boolean;
-  finalizeProcessNdcDecreases: boolean;
-  finalizeProcessNdcIncreases: boolean;
   settlementFinalizingInProgress: boolean;
   settlementAdjustments: null | SettlementAdjustments;
   settlementReportValidationInProgress: boolean;
