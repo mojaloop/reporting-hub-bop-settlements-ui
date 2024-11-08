@@ -193,6 +193,7 @@ function renderStatus(state: SettlementWindowStatus) {
 const SettlementWindows: FC<SettlementWindowsProps> = ({
   settlementWindows,
   settlementWindowsError,
+  settlementModels,
   isSettlementWindowsPending,
   filters,
   checkedSettlementWindows,
@@ -201,6 +202,7 @@ const SettlementWindows: FC<SettlementWindowsProps> = ({
   isSettleSettlementWindowPending,
   settleSettlementWindowsError,
   settlingWindowsSettlementId,
+  isSettlementModelsPending,
   onDateRangerFilterSelect,
   onDateFilterClearClick,
   onStartDateRangeFilterSelect,
@@ -212,6 +214,7 @@ const SettlementWindows: FC<SettlementWindowsProps> = ({
   onSettleButtonClick,
   onCloseButtonClick,
   onCloseModalClick,
+  onSelectedSettlementModel,
 }) => {
   const columns = [
     { key: 'settlementWindowId', label: 'Window ID' },
@@ -250,22 +253,38 @@ const SettlementWindows: FC<SettlementWindowsProps> = ({
       },
     },
   ];
-
   let content = null;
   if (settlementWindowsError) {
     content = <MessageBox kind="danger">{settlementWindowsError}</MessageBox>;
-  } else if (isSettlementWindowsPending) {
+  } else if (isSettlementWindowsPending || isSettlementModelsPending) {
     content = <Spinner center />;
   } else {
+    const models = settlementModels.map((model) => {
+      return {
+        label: model.name,
+        value: model.name,
+      };
+    });
+
     content = (
       <>
         <div className="settlement-windows__controls">
+          <Select
+            className="settlements__filters__date-filter"
+            size="s"
+            id="selected_settlement_model"
+            placeholder="Settlement Model"
+            options={models}
+            selected={filters?.state}
+            onChange={(value: string) => onSelectedSettlementModel(value)}
+          />
           <Button
             disabled={!checkedSettlementWindows.length}
             label="Settle Selected Windows"
-            onClick={() => onSettleButtonClick(checkedSettlementWindows)}
+            onClick={onSettleButtonClick}
           />
         </div>
+
         <DataList
           columns={columns}
           list={settlementWindows}

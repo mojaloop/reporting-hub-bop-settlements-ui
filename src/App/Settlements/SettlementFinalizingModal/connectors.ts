@@ -3,16 +3,13 @@ import { ReduxContext } from 'store';
 import { State, Dispatch } from 'store/types';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
-import { Settlement, SettlementReport } from '../types';
+import { Settlement } from '../types';
 
 const mapStateProps = (state: State) => ({
   settlementReport: selectors.getSettlementReport(state),
   finalizingSettlement: selectors.getFinalizingSettlement(state),
   finalizingSettlementError: selectors.getFinalizingSettlementError(state),
   settlementReportError: selectors.getSettlementReportError(state),
-  processFundsInOut: selectors.getFinalizeProcessFundsInOut(state),
-  processNdcIncreases: selectors.getFinalizeProcessNdcIncreases(state),
-  processNdcDecreases: selectors.getFinalizeProcessNdcDecreases(state),
   settlementFinalizingInProgress: selectors.getSettlementFinalizingInProgress(state),
   settlementReportValidationWarnings: selectors.getSettlementReportValidationWarnings(state),
   settlementReportValidationErrors: selectors.getSettlementReportValidationErrors(state),
@@ -38,28 +35,10 @@ const mapDispatchProps = (dispatch: Dispatch) => ({
     dispatch(actions.hideFinalizeSettlementModal());
     dispatch(actions.requestSettlements());
   },
-  onValidateButtonClick: () => {
-    dispatch(actions.validateSettlementReport());
-    dispatch(actions.setSettlementReportValidationInProgress(true));
-  },
   onProcessButtonClick: (settlement: Settlement) => {
     dispatch(actions.setSettlementFinalizingInProgress(true));
     dispatch(actions.finalizeSettlement(settlement));
   },
-  onSelectSettlementReport: (report: SettlementReport) => {
-    dispatch(actions.setSettlementReportValidationErrors(null));
-    dispatch(actions.setSettlementReportValidationWarnings(null));
-    dispatch(actions.setSettlementReport(report || null));
-  },
-  onSettlementReportProcessingError: (err: string) =>
-    dispatch(actions.setSettlementReportError(err)),
-  onSetFundsInOutChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(actions.setFinalizeProcessFundsInOut(e.target.checked));
-  },
-  onSetNetDebitCapDecreasesChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(actions.setFinalizeProcessNdcDecreases(e.target.checked)),
-  onSetNetDebitCapIncreasesChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(actions.setFinalizeProcessNdcIncreases(e.target.checked)),
   onClearSettlementReportWarnings: () =>
     dispatch(actions.setSettlementReportValidationWarnings(null)),
 });

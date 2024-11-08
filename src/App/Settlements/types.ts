@@ -89,7 +89,7 @@ export interface Adjustment {
   currentLimit: Limit;
   settlementParticipantAccount: SettlementParticipantAccount;
   settlementParticipant: SettlementParticipant;
-  dfspInsolvement: boolean;
+  // dfspInsolvement: boolean;
 }
 
 export interface LedgerParticipant {
@@ -355,9 +355,6 @@ export interface SettlementsState {
   finalizingSettlementError: null | FinalizeSettlementError;
   settlementReport: null | SettlementReport;
   settlementReportError: null | string;
-  finalizeProcessFundsInOut: boolean;
-  finalizeProcessNdcDecreases: boolean;
-  finalizeProcessNdcIncreases: boolean;
   settlementFinalizingInProgress: boolean;
   settlementAdjustments: null | SettlementAdjustments;
   settlementReportValidationInProgress: boolean;

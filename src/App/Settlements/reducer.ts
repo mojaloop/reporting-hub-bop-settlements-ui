@@ -27,9 +27,6 @@ import {
   setSettlementReportError,
   showFinalizeSettlementModal,
   hideFinalizeSettlementModal,
-  setFinalizeProcessFundsInOut,
-  setFinalizeProcessNdcIncreases,
-  setFinalizeProcessNdcDecreases,
   setSettlementFinalizingInProgress,
   setSettlementAdjustments,
   setSettlementReportValidationErrors,
@@ -56,9 +53,6 @@ const initialState: SettlementsState = {
   settlementReportError: null,
   finalizingSettlement: null,
   finalizingSettlementError: null,
-  finalizeProcessFundsInOut: true,
-  finalizeProcessNdcIncreases: true,
-  finalizeProcessNdcDecreases: true,
   settlementFinalizingInProgress: false,
   settlementAdjustments: null,
   settlementReportValidationErrors: null,
@@ -199,27 +193,6 @@ export default createReducer(initialState, (builder) =>
       (state: SettlementsState, action: PayloadAction<string>) => ({
         ...state,
         settlementReportError: action.payload,
-      }),
-    )
-    .addCase(
-      setFinalizeProcessFundsInOut,
-      (state: SettlementsState, action: PayloadAction<boolean>) => ({
-        ...state,
-        finalizeProcessFundsInOut: action.payload,
-      }),
-    )
-    .addCase(
-      setFinalizeProcessNdcIncreases,
-      (state: SettlementsState, action: PayloadAction<boolean>) => ({
-        ...state,
-        finalizeProcessNdcIncreases: action.payload,
-      }),
-    )
-    .addCase(
-      setFinalizeProcessNdcDecreases,
-      (state: SettlementsState, action: PayloadAction<boolean>) => ({
-        ...state,
-        finalizeProcessNdcDecreases: action.payload,
       }),
     )
     .addCase(
