@@ -16,6 +16,8 @@ import {
   SettlementWindow,
   SettlementWindowStatus,
   SettlementStatus,
+  SettlementModel,
+  REQUEST_SETTLEMENT_MODELS,
 } from './types';
 import {
   requestSettlementWindows,
@@ -24,9 +26,15 @@ import {
   setCloseSettlementWindowFinished,
   setSettleSettlementWindowsError,
   setSettleSettlementWindowsFinished,
+  setSettlementModels,
 } from './actions';
 
-import { getCheckedSettlementWindows, getSettlementWindowsFilters } from './selectors';
+import {
+  getCheckedSettlementWindows,
+  getSelectedSettlementModel,
+  // getSelectedSettlementModel,
+  getSettlementWindowsFilters,
+} from './selectors';
 import * as helpers from './helpers';
 
 function* fetchSettlementWindows() {
@@ -104,11 +112,55 @@ function* fetchSettlementWindows() {
   }
 }
 
+function* fetchSettlementModels() {
+  try {
+    // @ts-ignore
+    const models = (yield all([call(api.settlementModels.read, {})]))
+      .map((resp: { data: any; status: number }) => {
+        if (
+          resp.status === 400 &&
+          /Generic validation error.*not found/.test(resp.data?.errorInformation?.errorDescription)
+        ) {
+          return [];
+        }
+        if (resp.status === 403) {
+          if (resp.data?.error?.message) {
+            throw new Error(
+              `Failed to retrieve settlement models data - ${JSON.stringify(
+                resp.data?.error?.message,
+              )}`,
+            );
+          }
+        }
+        assert(
+          resp.status >= 200 && resp.status < 300,
+          `Failed to retrieve settlement models data`,
+        );
+        return resp.data;
+      })
+      .flat()
+      .reduce(
+        (map: Map<number, SettlementModel>, model: SettlementModel) =>
+          map.set(model.settlementModelId, model),
+        new Map<number, SettlementModel>(),
+      );
+
+    yield put(setSettlementModels([...models.values()]));
+  } catch (e) {
+    console.error(e);
+    yield put(setSettlementWindowsError(e.message));
+  }
+}
+
 export function* FetchSettlementWindowsSaga(): Generator {
   yield takeLatest(
     [REQUEST_SETTLEMENT_WINDOWS, CLOSE_SETTLEMENT_WINDOW_MODAL],
     fetchSettlementWindows,
   );
+}
+
+export function* FetchSettlementModelsSaga(): Generator {
+  yield takeLatest([REQUEST_SETTLEMENT_MODELS], fetchSettlementModels);
 }
 
 function* fetchSettlementWindowsAfterFiltersChange(action: PayloadAction) {
@@ -136,11 +188,12 @@ export function* FetchSettlementWindowsAfterFiltersChangeSaga(): Generator {
 function* settleWindows() {
   try {
     const windows: SettlementWindow[] = yield select(getCheckedSettlementWindows);
+    const selectedSettlementModel: string = yield select(getSelectedSettlementModel);
     // @ts-ignore
     const settlementResponse = yield call(api.settleSettlementWindows.create, {
       body: {
         // TODO: settlementModel must be parametrised
-        settlementModel: 'DEFERREDNET',
+        settlementModel: selectedSettlementModel,
         reason: 'Business Operations Portal request',
         settlementWindows: windows.map((w) => ({ id: w.settlementWindowId })),
       },
@@ -237,5 +290,6 @@ export default function* rootSaga(): Generator {
     SettleSettlementWindowsSaga(),
     CloseSettlementWindowsSaga(),
     FetchSettlementWindowsAfterFiltersChangeSaga(),
+    FetchSettlementModelsSaga(),
   ]);
 }

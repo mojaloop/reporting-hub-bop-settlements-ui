@@ -18,12 +18,16 @@ const mapStateProps = (state: State) => ({
   isSettleSettlementWindowPending: selectors.getIsSettleSettlementWindowPending(state),
   settleSettlementWindowsError: selectors.getSettleSettlementWindowsError(state),
   settlingWindowsSettlementId: selectors.getSettlingWindowsSettlementId(state),
+  settlementModels: selectors.getSettlementModels(state),
+  isSettlementModelsPending: selectors.getIsSettlementModelsPending(state),
+  selectedSettlementModel: selectors.getSelectedSettlementModel(state),
 });
 
 const mapDispatchProps = (dispatch: Dispatch) => ({
   onMount: () => {
     dispatch(actions.resetSettlementWindows());
     dispatch(actions.requestSettlementWindows());
+    dispatch(actions.requestSettlementModels());
   },
 
   onDateRangerFilterSelect: (payload: DateRanges) =>
@@ -39,11 +43,11 @@ const mapDispatchProps = (dispatch: Dispatch) => ({
   onClearFiltersClick: () => dispatch(actions.clearSettlementWindowsFilters()),
   onSettlementsWindowsCheck: (items: SettlementWindow[]) =>
     dispatch(actions.checkSettlementWindows(items)),
-  onSettleButtonClick: (windows: SettlementWindow[]) =>
-    dispatch(actions.settleSettlementWindows(windows)),
+  onSettleButtonClick: () => dispatch(actions.settleSettlementWindows()),
   onCloseButtonClick: (settlementWindow: SettlementWindow) =>
     dispatch(actions.requestCloseSettlementWindow(settlementWindow)),
   onCloseModalClick: () => dispatch(actions.closeSettlementWindowModal()),
+  onSelectedSettlementModel: (value: string) => dispatch(actions.setSelectedSettlementModel(value)),
 });
 
 const settlementWindowsConnector = connect(mapStateProps, mapDispatchProps, null, {

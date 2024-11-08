@@ -21,3 +21,9 @@ export const getSettleSettlementWindowsError = (state: State) =>
   state.settlementWindows.settleSettlementWindowsError;
 export const getSettlingWindowsSettlementId = (state: State) =>
   state.settlementWindows.settlingWindowsSettlementId;
+
+export const getSelectedSettlementModel = (state: State) =>
+  state.settlementWindows.selectedSettlementModel;
+export const getSettlementModels = (state: State) => state.settlementWindows.settlementModels;
+export const getIsSettlementModelsPending = (state: State) =>
+  state.settlementWindows.isSettlementModelsPending;

@@ -1,5 +1,11 @@
 import { createReducer, PayloadAction } from '@reduxjs/toolkit';
-import { SettlementWindowsState, SettlementWindow, DateRanges, FilterNameValue } from './types';
+import {
+  SettlementWindowsState,
+  SettlementWindow,
+  DateRanges,
+  FilterNameValue,
+  SettlementModel,
+} from './types';
 import { getDateRangeTimestamp } from './helpers';
 import {
   resetSettlementWindows,
@@ -19,6 +25,8 @@ import {
   closeSettlementWindowModal,
   requestCloseSettlementWindow,
   setCloseSettlementWindowFinished,
+  setSelectedSettlementModel,
+  setSettlementModels,
 } from './actions';
 
 const initialState: SettlementWindowsState = {
@@ -26,6 +34,9 @@ const initialState: SettlementWindowsState = {
   settlementWindows: [],
   settlementWindowsError: null,
   selectedSettlementWindow: undefined,
+  selectedSettlementModel: undefined,
+  isSettlementModelsPending: true,
+  settlementModels: [],
   checkedSettlementWindows: [],
   isSettlementWindowModalVisible: false,
   settlingWindowsSettlementId: null,
@@ -184,5 +195,20 @@ export default createReducer(initialState, (builder) =>
     .addCase(setCloseSettlementWindowFinished, (state: SettlementWindowsState) => ({
       ...state,
       isCloseSettlementWindowPending: false,
-    })),
+    }))
+    .addCase(
+      setSettlementModels,
+      (state: SettlementWindowsState, action: PayloadAction<SettlementModel[]>) => ({
+        ...state,
+        settlementModels: action.payload,
+        isSettlementModelsPending: false,
+      }),
+    )
+    .addCase(
+      setSelectedSettlementModel,
+      (state: SettlementWindowsState, action: PayloadAction<string>) => ({
+        ...state,
+        selectedSettlementModel: action.payload,
+      }),
+    ),
 );

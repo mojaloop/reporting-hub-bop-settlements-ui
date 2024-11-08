@@ -29,6 +29,9 @@ export const REQUEST_CLOSE_SETTLEMENT_WINDOW =
   'Settlement Windows / Request Close Settlement Window';
 export const SET_CLOSE_SETTLEMENT_WINDOW_FINISHED =
   'Settlement Windows / Set Close Settlement Window Finished';
+export const SET_SETTLEMENT_MODELS = 'Settlement Windows / Set Settlement Models';
+export const REQUEST_SETTLEMENT_MODELS = 'Settlement Windows / Request Settlement Models';
+export const SET_SELECTED_SETTLEMENT_MODEL = 'Settlement Windows / Set Selected Settlement Model';
 
 export interface SettlementWindow {
   settlementWindowId: number;
@@ -36,7 +39,18 @@ export interface SettlementWindow {
   createdDate: string;
   changedDate: string;
 }
-
+export interface SettlementModel {
+  settlementModelId: number;
+  name: string;
+  IsActive: boolean;
+  settlementGranularity: string;
+  settlementInterchange: string;
+  settlementDelay: string;
+  currency: string;
+  requireLiquidityCheck: boolean;
+  ledgerAccountTypeId: string;
+  autoPositionReset: boolean;
+}
 export enum SettlementWindowStatus {
   Open = 'OPEN',
   Closed = 'CLOSED',
@@ -60,19 +74,21 @@ export interface SettlementWindowFilters {
   start?: number;
   end?: number;
 }
-
 export interface SettlementWindowsState {
   settlementWindows: SettlementWindow[];
   settlementWindowsError: ErrorMessage;
   isSettlementWindowsPending: boolean;
   selectedSettlementWindow?: SettlementWindow;
   filters: SettlementWindowFilters;
+  selectedSettlementModel: string | undefined;
   checkedSettlementWindows: SettlementWindow[];
   isSettlementWindowModalVisible: boolean;
   isCloseSettlementWindowPending: boolean;
   isSettleSettlementWindowPending: boolean;
   settleSettlementWindowsError: ErrorMessage;
   settlingWindowsSettlementId: number | null;
+  settlementModels: SettlementModel[];
+  isSettlementModelsPending: boolean;
 }
 
 export type FilterValue = null | boolean | undefined | string | number;

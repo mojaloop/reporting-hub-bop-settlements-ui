@@ -20,6 +20,10 @@ import {
   SettlementWindow,
   DateRanges,
   FilterNameValue,
+  SettlementModel,
+  SET_SETTLEMENT_MODELS,
+  REQUEST_SETTLEMENT_MODELS,
+  SET_SELECTED_SETTLEMENT_MODEL,
 } from './types';
 
 export const resetSettlementWindows = createAction(RESET_SETTLEMENT_WINDOWS);
@@ -45,7 +49,7 @@ export const setSettlementWindowsFilterValue = createAction<FilterNameValue>(
 );
 export const clearSettlementWindowsFilters = createAction(CLEAR_SETTLEMENT_WINDOWS_FILTERS);
 export const checkSettlementWindows = createAction<SettlementWindow[]>(CHECK_SETTLEMENT_WINDOWS);
-export const settleSettlementWindows = createAction<SettlementWindow[]>(SETTLE_SETTLEMENT_WINDOWS);
+export const settleSettlementWindows = createAction(SETTLE_SETTLEMENT_WINDOWS);
 export const setSettleSettlementWindowsFinished = createAction<number>(
   SET_SETTLE_SETTLEMENT_WINDOWS_FINISHED,
 );
@@ -57,3 +61,8 @@ export const requestCloseSettlementWindow = createAction<SettlementWindow>(
 );
 export const setCloseSettlementWindowFinished = createAction(SET_CLOSE_SETTLEMENT_WINDOW_FINISHED);
 export const closeSettlementWindowModal = createAction(CLOSE_SETTLEMENT_WINDOW_MODAL);
+
+export const requestSettlementModels = createAction(REQUEST_SETTLEMENT_MODELS);
+export const setSettlementModels = createAction<SettlementModel[]>(SET_SETTLEMENT_MODELS);
+
+export const setSelectedSettlementModel = createAction<string>(SET_SELECTED_SETTLEMENT_MODEL);

@@ -3,7 +3,7 @@ import { strict as assert } from 'assert';
 import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'utils/api';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
-import { v4 as uuidv4 } from 'uuid';
+import utilId from 'utils/id';
 import {
   AccountId,
   AccountWithPosition,
@@ -61,6 +61,12 @@ import {
   finalizeDataUtils,
   validateReport,
 } from './helpers';
+
+const generateUlid =
+  utilId({ type: 'ulid' }) ||
+  (() => {
+    throw new Error('generateUlid is undefined');
+  });
 
 class FinalizeSettlementAssertionError extends Error {
   data: FinalizeSettlementError;
@@ -232,7 +238,7 @@ function* processAdjustments({
             // optional in the spec: https://github.com/mojaloop/central-ledger/blob/f0268fe56c76cc73f254d794ad09eb50569d5b58/src/api/interface/swagger.json#L1428
             currency: adjustment.settlementAccount.currency,
           },
-          transferId: uuidv4(),
+          transferId: generateUlid(),
         },
       };
       const fundsInResult: ApiResponse = yield call(api.participantAccount.create, request);
@@ -249,7 +255,7 @@ function* processAdjustments({
       }
     } else {
       // Make the call to process funds out, then poll the balance until it's reduced
-      const transferId = uuidv4();
+      const transferId = generateUlid();
       const fundsOutPrepareReserveRequest = {
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
