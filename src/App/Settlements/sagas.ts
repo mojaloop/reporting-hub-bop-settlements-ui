@@ -95,36 +95,6 @@ function* processAdjustments({
   const results: FinalizeSettlementProcessAdjustmentsError[] = [];
   for (let i = 0; i < adjustments.length; i++) {
     const adjustment = adjustments[i];
-    /*
-    if (adjustment.dfspInsolvement) {
-      // Disable participant account
-      const positionAccountId = adjustment.participant.accounts.find(
-        (acc) => acc.ledgerAccountType === 'POSITION',
-      )!.id;
-      const disableParticipantRequest = {
-        participantName: adjustment.participant.name,
-        accountId: positionAccountId,
-        body: {
-          isActive: false,
-        },
-      };
-      const disableParticipantResult: ApiResponse = yield call(
-        api.participantAccount.update,
-        disableParticipantRequest,
-      );
-      if (disableParticipantResult.status !== 200) {
-        results.push({
-          type: FinalizeSettlementProcessAdjustmentsErrorKind.DISABLE_PARTICIPANT_FAILED,
-          value: {
-            adjustment,
-            error: disableParticipantResult.data,
-            request: disableParticipantRequest,
-          },
-        });
-        break;
-      }
-    }
-    */
     const stateOrder = [
       SettlementStatus.Aborted,
       SettlementStatus.PendingSettlement,
@@ -178,7 +148,7 @@ function* processAdjustments({
     }
 
     if (adjustment.amount > 0) {
-      // Make the call to process funds out, then poll the balance until it's reduced
+      // Make the call to process funds in, then poll the balance until it's reduced
       const request = {
         participantName: adjustment.participant.name,
         accountId: adjustment.settlementAccount.id,
@@ -267,7 +237,7 @@ function* processAdjustments({
 
     // Poll for a while to confirm the new balance
     const POLL_ATTEMPTS = 5;
-    const expectedAccountBalance = Math.max(0, adjustment.settlementBankBalance);
+    // const expectedAccountBalance = Math.max(0, adjustment.settlementBankBalance);
     for (let j = 0; j < POLL_ATTEMPTS; j++) {
       const SECONDS = 1000;
       yield delay(2 * SECONDS);
@@ -282,6 +252,8 @@ function* processAdjustments({
 
       // Check if balance is changed since last GET
       if (newBalanceResult.status === 200 && newBalance !== adjustment.settlementAccount.value) {
+        const switchBalance = -adjustment.settlementAccount.value;
+        const expectedAccountBalance = switchBalance + adjustment.amount;
         // We use "negative" newBalance because the switch returns a negative value for credit
         // balances. The switch doesn't have a concept of debit balances for settlement
         // accounts.
@@ -370,12 +342,14 @@ function* collectSettlementFinalizeData(settlement: Settlement) {
   const accountsPositions: Map<AccountId, AccountWithPosition> = getAccountsPositions(
     // @ts-ignore
     (yield all(
-      settlement.participants.map(function* getParticipantAccount({ accounts }) {
-        const participantName = accountsParticipants.get(accounts[0].id)?.participant.name;
-        assert(participantName, `Couldn't find participant for account ${accounts[0].id}`);
-        const result = yield call(api.participantAccounts.read, { participantName });
-        return [participantName, result];
-      }),
+      settlement.participants.flatMap((participant) =>
+        participant.accounts.map(function* getParticipantAccount(account) {
+          const participantName = accountsParticipants.get(account.id)?.participant.name;
+          assert(participantName, `Couldn't find participant for account ${account.id}`);
+          const result = yield call(api.participantAccounts.read, { participantName });
+          return [participantName, result];
+        }),
+      ),
     )).flatMap(([participantName, result]: [FspName, ApiResponse]) =>
       ensureResponse(result, 200, `Failed to retrieve accounts for participant ${participantName}`),
     ),
@@ -405,75 +379,78 @@ function buildAdjustments({
   settlementParticipantAccounts,
   settlementParticipants,
 }: SettlementFinalizeData): Adjustment[] {
-  return settlement.participants.map((part): Adjustment => {
-    const accountParticipant = accountsParticipants.get(part.accounts[0].id);
-    assert(
-      accountParticipant !== undefined,
-      `Failed to retrieve participant for account ${part.accounts[0].id}`,
-    );
-    const { participant } = accountParticipant;
-    const positionAccount = accountsPositions.get(part.accounts[0].id);
-    assert(
-      positionAccount !== undefined,
-      `Failed to retrieve position for account ${part.accounts[0].id}`,
-    );
-    const { currency } = positionAccount;
-    const currentLimit = participantsLimits.get(participant.name)?.get(currency);
-    assert(
-      currentLimit !== undefined,
-      `Failed to retrieve limit for participant ${participant.name} currency ${currency}`,
-    );
-    const settlementAccountId = participantsAccounts
-      .get(participant.name)
-      ?.get(currency)
-      ?.get('SETTLEMENT')?.account?.id;
-    assert(
-      settlementAccountId,
-      `Failed to retrieve ${currency} settlement account for ${participant.name}`,
-    );
-    const settlementAccount = accountsPositions.get(settlementAccountId);
-    assert(
-      settlementAccount,
-      `Failed to retrieve ${currency} settlement account for ${participant.name}`,
-    );
-    assert(
-      settlementAccount.currency === positionAccount.currency,
-      `Unexpected data validation error: position account and settlement account currencies are not equal for ${participant.name}. This is most likely a bug.`,
-    );
-    // We use the negative settlement account balance because the switch presents a credit
-    // balance as a negative.
-    const switchBalance = -settlementAccount.value;
-    assert(
-      switchBalance !== undefined,
-      `Failed to retrieve position for account ${settlementAccountId}`,
-    );
+  let adjustments: Adjustment[] = [];
+  settlement.participants.forEach((part) => {
+    const participantAdjustments: Adjustment[] = [];
+    part.accounts.forEach((account) => {
+      const accountId = account.id;
+      const accountParticipant = accountsParticipants.get(accountId);
+      assert(
+        accountParticipant !== undefined,
+        `Failed to retrieve participant for account ${accountId}`,
+      );
+      const { participant } = accountParticipant;
+      const positionAccount = accountsPositions.get(accountId);
+      assert(positionAccount !== undefined, `Failed to retrieve position for account ${accountId}`);
+      const { currency } = positionAccount;
+      const currentLimit = participantsLimits.get(participant.name)?.get(currency);
+      assert(
+        currentLimit !== undefined,
+        `Failed to retrieve limit for participant ${participant.name} currency ${currency}`,
+      );
+      const settlementAccountId = participantsAccounts
+        .get(participant.name)
+        ?.get(currency)
+        ?.get('SETTLEMENT')?.account?.id;
+      assert(
+        settlementAccountId,
+        `Failed to retrieve ${currency} settlement account for ${participant.name}`,
+      );
+      const settlementAccount = accountsPositions.get(settlementAccountId);
+      assert(
+        settlementAccount,
+        `Failed to retrieve ${currency} settlement account for ${participant.name}`,
+      );
+      assert(
+        settlementAccount.currency === positionAccount.currency,
+        `Unexpected data validation error: position account and settlement account currencies are not equal for ${participant.name}. This is most likely a bug.`,
+      );
+      // We use the negative settlement account balance because the switch presents a credit
+      // balance as a negative.
+      const switchBalance = -settlementAccount.value;
+      assert(
+        switchBalance !== undefined,
+        `Failed to retrieve position for account ${settlementAccountId}`,
+      );
 
-    const settlementParticipantAccount = settlementParticipantAccounts.get(part.accounts[0].id);
-    assert(
-      settlementParticipantAccount !== undefined,
-      `Failed to retrieve settlement participant account for account ${part.accounts[0].id}`,
-    );
+      const settlementParticipantAccount = settlementParticipantAccounts.get(accountId);
+      assert(
+        settlementParticipantAccount !== undefined,
+        `Failed to retrieve settlement participant account for account ${accountId}`,
+      );
 
-    const settlementParticipant = settlementParticipants.get(settlementParticipantAccount.id);
-    assert(
-      settlementParticipant !== undefined,
-      `Failed to retrieve settlement participant for account ${part.accounts[0].id}`,
-    );
+      const settlementParticipant = settlementParticipants.get(settlementParticipantAccount.id);
+      assert(
+        settlementParticipant !== undefined,
+        `Failed to retrieve settlement participant for account ${accountId}`,
+      );
 
-    // Play around with amount and settlementBankBalance to observe what happens in the switch
-    const amount = positionAccount.value - switchBalance;
-
-    return {
-      settlementBankBalance: positionAccount.value,
-      participant,
-      amount,
-      positionAccount,
-      settlementAccount,
-      currentLimit,
-      settlementParticipantAccount,
-      settlementParticipant,
-    };
+      // Play around with amount and settlementBankBalance to observe what happens in the switch
+      const amount = -account.netSettlementAmount.amount;
+      participantAdjustments.push({
+        participant,
+        amount,
+        positionAccount,
+        settlementAccount,
+        currentLimit,
+        settlementParticipantAccount,
+        settlementParticipant,
+      });
+    });
+    const newAdjustments = adjustments.concat(participantAdjustments);
+    adjustments = newAdjustments;
   });
+  return adjustments;
 }
 
 function* finalizeSettlement(action: PayloadAction<Settlement>) {
