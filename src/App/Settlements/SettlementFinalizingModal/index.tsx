@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import { Button, ErrorBox, Modal, Spinner } from 'outdated-components';
 import { MD5 as hash } from 'object-hash';
 import {
-  // readFileAsArrayBuffer,
   generateSettlementReportValidationDetail,
   explainSettlementReportValidationKind,
 } from '../helpers';

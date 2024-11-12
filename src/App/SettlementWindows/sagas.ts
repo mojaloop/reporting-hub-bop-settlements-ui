@@ -32,7 +32,6 @@ import {
 import {
   getCheckedSettlementWindows,
   getSelectedSettlementModel,
-  // getSelectedSettlementModel,
   getSettlementWindowsFilters,
 } from './selectors';
 import * as helpers from './helpers';
