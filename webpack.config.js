@@ -85,6 +85,13 @@ module.exports = {
         pathRewrite: { '^/reporting-api': '' },
         secure: false,
       },
+      '/template-api': {
+        // For local testing update `target` to point to your
+        // locally hosted or port-forwarded `reporting` service
+        target: 'http://localhost:3306',
+        pathRewrite: { '^/template-api': '' },
+        secure: false,
+      }
     },
   },
   output: {

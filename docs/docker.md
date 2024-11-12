@@ -55,5 +55,6 @@ docker run --rm \
   -e CENTRAL_LEDGER_ENDPOINT="https://your-api-base-url" \
   -e CENTRAL_SETTLEMENTS_ENDPOINT="https://your-api-base-url" \
   -e REPORTING_API_ENDPOINT="https://your-api-base-url" \
+  -e REPORTING_TEMPLATE_API_ENDPOINT="https://your-api-base-url" \
    reporting-hub-bop-settlements-ui
 ```
