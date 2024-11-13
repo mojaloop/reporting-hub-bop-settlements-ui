@@ -1,6 +1,6 @@
 {
   "name": "@mojaloop/reporting-hub-bop-settlements-ui",
-  "version": "0.0.19-snapshot.1",
+  "version": "0.0.19-snapshot.2",
   "description": "",
   "main": "index.js",
   "scripts": {
