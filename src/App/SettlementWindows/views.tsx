@@ -275,7 +275,6 @@ const SettlementWindows: FC<SettlementWindowsProps> = ({
             id="selected_settlement_model"
             placeholder="Settlement Model"
             options={models}
-            selected={models[0]?.value || ''}
             onChange={(value: string) => onSelectedSettlementModel(value)}
           />
           <Button

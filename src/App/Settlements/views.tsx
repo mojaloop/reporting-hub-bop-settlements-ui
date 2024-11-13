@@ -200,7 +200,7 @@ const Settlements: FC<SettlementsProps> = ({
                 href="google.com"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}/settlements?settlementId=${item.id}&format=html`;
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=html`;
                 }}
               />
               <Button
@@ -210,7 +210,7 @@ const Settlements: FC<SettlementsProps> = ({
                 label="json"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}/settlements?settlementId=${item.id}&format=json`;
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=json`;
                 }}
               />
               <Button
@@ -220,7 +220,7 @@ const Settlements: FC<SettlementsProps> = ({
                 label="xlsx"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}/settlements?settlementId=${item.id}&format=xlsx`;
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=xlsx`;
                 }}
               />
               <Button
@@ -230,7 +230,7 @@ const Settlements: FC<SettlementsProps> = ({
                 label="csv"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}/settlements?settlementId=${item.id}&format=csv`;
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=csv`;
                 }}
               />
             </div>
