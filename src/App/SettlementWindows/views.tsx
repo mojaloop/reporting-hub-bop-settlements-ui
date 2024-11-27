@@ -156,7 +156,9 @@ const SettlementWindowModal: FC<SettlementWindowModalProps> = ({
             noFill
             kind="secondary"
             label="View Submitted Settlements"
-            onClick={() => history.push('/settle')}
+            onClick={() => {
+              history.push('./settle');
+            }}
           />
         </div>
         <div className="settlements-windows__modal__row">

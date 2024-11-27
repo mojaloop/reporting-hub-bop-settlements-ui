@@ -32,6 +32,11 @@ function renderStatus(state: SettlementStatus) {
   );
 }
 
+export const openInNewTab = (url: string): void => {
+  const newWindow = window.open(url, '_blank', 'noopener,noreferrer');
+  if (newWindow) newWindow.opener = null;
+};
+
 interface FiltersProps {
   filters: SettlementFilters;
   onDateRangerFilterSelect: (payload: DateRanges) => void;
@@ -200,17 +205,7 @@ const Settlements: FC<SettlementsProps> = ({
                 href="google.com"
                 onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=html`;
-                }}
-              />
-              <Button
-                kind="secondary"
-                noFill
-                size="s"
-                label="json"
-                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-                  e.stopPropagation();
-                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=json`;
+                  openInNewTab(`${reportingTemplateURL}?settlementId=${item.id}&format=html`);
                 }}
               />
               <Button
