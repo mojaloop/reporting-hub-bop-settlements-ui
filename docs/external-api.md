@@ -2,7 +2,8 @@
 
 `reporting-hub-bop-settlements-ui` is reliant on three mojaloop services.
 When running locally, you can use the environment variables
-`CENTRAL_SETTLEMENTS_ENDPOINT`, `CENTRAL_LEDGER_ENDPOINT` and `REPORTING_API_ENDPOINT`
+`CENTRAL_SETTLEMENTS_ENDPOINT`, `CENTRAL_LEDGER_ENDPOINT`, `REPORTING_API_ENDPOINT`
+and `REPORTING_TEMPLATE_API_ENDPOINT`
 in `.env` to specify the location of the api services.
 
 If these services are hosted on a different domain and have CORS protection,
@@ -21,4 +22,5 @@ If you want connect to the live services deployed in K8S, you can port forward t
 kubectl port-forward -n mojaloop service/moja-centralledger-service 3001:80 &
 kubectl port-forward -n mojaloop service/moja-centralsettlement-service 3007:80 &
 kubectl port-forward -n mojaloop service/bof-reporting-hub-bop-api-svc 3080:80 &
+kubectl port-forward -n mojaloop service/reporting 3306:80 &
 ```
