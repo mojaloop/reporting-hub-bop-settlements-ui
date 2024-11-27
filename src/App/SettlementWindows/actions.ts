@@ -20,8 +20,24 @@ import {
   SettlementWindow,
   DateRanges,
   FilterNameValue,
+  SettlementModel,
+  SET_SETTLEMENT_MODELS,
+  REQUEST_SETTLEMENT_MODELS,
+  SET_SELECTED_SETTLEMENT_MODEL,
 } from './types';
 
+// Functions that create actions to update the state.
+// We use @reduxjs/toolkit to save use some boilerplate code.
+// const increment = createAction<number | undefined>('counter/increment')
+
+// let action = increment()
+// { type: 'counter/increment' }
+
+// action = increment(3)
+// returns { type: 'counter/increment', payload: 3 }
+
+// console.log(`The action type is: ${increment.type}`)
+// 'The action type is: counter/increment'
 export const resetSettlementWindows = createAction(RESET_SETTLEMENT_WINDOWS);
 export const requestSettlementWindows = createAction(REQUEST_SETTLEMENT_WINDOWS);
 export const setSettlementWindows = createAction<SettlementWindow[]>(SET_SETTLEMENT_WINDOWS);
@@ -45,7 +61,7 @@ export const setSettlementWindowsFilterValue = createAction<FilterNameValue>(
 );
 export const clearSettlementWindowsFilters = createAction(CLEAR_SETTLEMENT_WINDOWS_FILTERS);
 export const checkSettlementWindows = createAction<SettlementWindow[]>(CHECK_SETTLEMENT_WINDOWS);
-export const settleSettlementWindows = createAction<SettlementWindow[]>(SETTLE_SETTLEMENT_WINDOWS);
+export const settleSettlementWindows = createAction(SETTLE_SETTLEMENT_WINDOWS);
 export const setSettleSettlementWindowsFinished = createAction<number>(
   SET_SETTLE_SETTLEMENT_WINDOWS_FINISHED,
 );
@@ -57,3 +73,8 @@ export const requestCloseSettlementWindow = createAction<SettlementWindow>(
 );
 export const setCloseSettlementWindowFinished = createAction(SET_CLOSE_SETTLEMENT_WINDOW_FINISHED);
 export const closeSettlementWindowModal = createAction(CLOSE_SETTLEMENT_WINDOW_MODAL);
+
+export const requestSettlementModels = createAction(REQUEST_SETTLEMENT_MODELS);
+export const setSettlementModels = createAction<SettlementModel[]>(SET_SETTLEMENT_MODELS);
+
+export const setSelectedSettlementModel = createAction<string>(SET_SELECTED_SETTLEMENT_MODEL);

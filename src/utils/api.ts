@@ -122,6 +122,11 @@ const participantAccount: EndpointConfig = {
     `/participants/${participantName}/accounts/${accountId}`,
 };
 
+const settlementModels: EndpointConfig = {
+  service: services.ledgerService,
+  url: () => '/settlementModels',
+};
+
 export default buildApi({
   closeSettlementWindow: builder<{}>(closeSettlementWindow),
   dfsps: builder<{}>(dfsps),
@@ -129,6 +134,7 @@ export default buildApi({
   settlements: builder<{}>(settlements),
   settlementWindows: builder<{}>(settlementWindows),
   settlementWindow: builder<{}>(settlementWindow),
+  settlementModels: builder<{}>(settlementModels),
   settlement: builder<{}>(settlement),
   settleSettlementWindows: builder<{}>(settleSettlementWindows),
   participants: builder<{}>(participants),

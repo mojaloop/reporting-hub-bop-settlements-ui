@@ -85,6 +85,13 @@ module.exports = {
         pathRewrite: { '^/reporting-api': '' },
         secure: false,
       },
+      '/template-api': {
+        // For local testing update `target` to point to your
+        // locally hosted or port-forwarded `reporting` service
+        target: 'http://localhost:3306',
+        pathRewrite: { '^/template-api': '' },
+        secure: false,
+      }
     },
   },
   output: {
@@ -104,6 +111,11 @@ module.exports = {
     },
     modules: [path.resolve(__dirname, 'src'), 'node_modules'],
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.css'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+      vm: require.resolve("vm-browserify")
+  },
   },
   module: {
     rules: [
@@ -119,6 +131,7 @@ module.exports = {
                 require.resolve('@babel/plugin-proposal-object-rest-spread'),
                 require.resolve('babel-plugin-syntax-async-functions'),
                 require.resolve('@babel/plugin-transform-runtime'),
+
               ].filter(Boolean),
             },
           },
@@ -192,5 +205,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html',
     }),
+    // fix "process is not defined" error:
+    new webpack.ProvidePlugin({
+      // Make a global `process` variable that points to the `process` package,
+      // because the `util` package expects there to be a global variable named `process`.
+      // Thanks to https://stackoverflow.com/a/65018686/14239942
+      process: 'process/browser'
+   }),
   ].filter(Boolean),
 };

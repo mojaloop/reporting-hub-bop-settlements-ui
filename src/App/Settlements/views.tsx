@@ -18,6 +18,11 @@ import SettlementFinalizingModal from './SettlementFinalizingModal';
 import './Settlements.css';
 import settlementsConnector, { SettlementsProps } from './connectors';
 
+const [reportingTemplateURL] =
+  process.env.NODE_ENV === 'production'
+    ? [window.settlementEnv.REPORTING_TEMPLATE_API_ENDPOINT]
+    : [process.env.REPORTING_TEMPLATE_API_ENDPOINT || ''];
+
 function renderStatus(state: SettlementStatus) {
   const { color, label } = helpers.getStatusProperties(state);
   return (
@@ -177,6 +182,59 @@ const Settlements: FC<SettlementsProps> = ({
             );
           }
           return null;
+        },
+      },
+      {
+        key: 'reports',
+        label: 'Report Summary',
+        sortable: false,
+        searchable: false,
+        func: (_settlementId: string, item: Settlement) => {
+          return (
+            <div>
+              <Button
+                kind="secondary"
+                noFill
+                size="s"
+                label="html"
+                href="google.com"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=html`;
+                }}
+              />
+              <Button
+                kind="secondary"
+                noFill
+                size="s"
+                label="json"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=json`;
+                }}
+              />
+              <Button
+                kind="secondary"
+                noFill
+                size="s"
+                label="xlsx"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=xlsx`;
+                }}
+              />
+              <Button
+                kind="secondary"
+                noFill
+                size="s"
+                label="csv"
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                  e.stopPropagation();
+                  window.location.href = `${reportingTemplateURL}?settlementId=${item.id}&format=csv`;
+                }}
+              />
+            </div>
+          );
         },
       },
     ];
