@@ -14,7 +14,7 @@
     "got": "^11.8.3",
     "mojaloop-ts": "v0.1.0-git-ca05c40b2ad8740790107b293bf3bcebbb95ef33",
     "mojaloop-voodoo-client": "0.7.0",
-    "testcafe": "^1.17.1",
+    "testcafe": "^15.1.317922",
     "async-retry": "^1.3.3",
     "testcafe-react-selectors": "^4.1.5",
     "ts4": "npm:typescript@^4.3.5",
