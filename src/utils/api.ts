@@ -1,18 +1,13 @@
 import { State } from 'store';
 import buildApi, { buildEndpointBuilder, EndpointConfig } from '@modusbox/redux-utils/lib/api';
 
-const [centralSettlementsURL, centralLedgerURL, reportingApiURL] =
+const [centralSettlementsURL, centralLedgerURL] =
   process.env.NODE_ENV === 'production'
     ? [
         window.settlementEnv.CENTRAL_SETTLEMENTS_ENDPOINT,
         window.settlementEnv.CENTRAL_LEDGER_ENDPOINT,
-        window.settlementEnv.REPORTING_API_ENDPOINT,
       ]
-    : [
-        process.env.CENTRAL_SETTLEMENTS_ENDPOINT || '',
-        process.env.CENTRAL_LEDGER_ENDPOINT || '',
-        process.env.REPORTING_API_ENDPOINT || '',
-      ];
+    : [process.env.CENTRAL_SETTLEMENTS_ENDPOINT || '', process.env.CENTRAL_LEDGER_ENDPOINT || ''];
 
 export const services = {
   settlementService: {
@@ -20,9 +15,6 @@ export const services = {
   },
   ledgerService: {
     baseUrl: centralLedgerURL,
-  },
-  reportingService: {
-    baseUrl: reportingApiURL,
   },
 };
 

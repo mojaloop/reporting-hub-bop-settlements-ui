@@ -2,7 +2,7 @@
 
 `reporting-hub-bop-settlements-ui` is reliant on three mojaloop services.
 When running locally, you can use the environment variables
-`CENTRAL_SETTLEMENTS_ENDPOINT`, `CENTRAL_LEDGER_ENDPOINT`, `REPORTING_API_ENDPOINT`
+`CENTRAL_SETTLEMENTS_ENDPOINT`, `CENTRAL_LEDGER_ENDPOINT`
 and `REPORTING_TEMPLATE_API_ENDPOINT`
 in `.env` to specify the location of the api services.
 
