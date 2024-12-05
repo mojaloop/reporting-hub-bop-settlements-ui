@@ -78,12 +78,6 @@ const closeSettlementWindow: EndpointConfig = {
   withCredentials: true,
 };
 
-const dfsps: EndpointConfig = {
-  service: services.reportingService,
-  url: () => '/graphql',
-  withCredentials: true,
-};
-
 const participants: EndpointConfig = {
   service: services.ledgerService,
   url: () => '/participants',
@@ -129,7 +123,6 @@ const settlementModels: EndpointConfig = {
 
 export default buildApi({
   closeSettlementWindow: builder<{}>(closeSettlementWindow),
-  dfsps: builder<{}>(dfsps),
   settlementParticipantAccount: builder<{}>(settlementParticipantAccount),
   settlements: builder<{}>(settlements),
   settlementWindows: builder<{}>(settlementWindows),
