@@ -12,6 +12,7 @@ function* fetchDfsps() {
     const dfsps: DFSP[] = participants.map((participant) => ({
       id: Number(participant.id),
       name: participant.name,
+      accountIds: participant.accounts.map((account) => Number(account.id)),
     }));
     yield put(setDfsps(dfsps));
   } catch (e) {

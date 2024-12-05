@@ -31,8 +31,9 @@ const SettlementDetails: FC<SettlementDetailsProps> = ({
   assert(selectedSettlement !== null);
   const rows = selectedSettlement.participants.flatMap((p: SettlementParticipant) =>
     // Position accounts are negative and is not intuitive for the ui.
+
     p.accounts.map((acc) => ({
-      dfsp: dfsps.find((dfsp: DFSP) => dfsp.id === p.id)?.name,
+      dfsp: dfsps.find((dfsp: DFSP) => dfsp.accountIds.includes(acc.id))?.name,
       credit: -acc.netSettlementAmount.amount > 0 ? -acc.netSettlementAmount.amount : '-',
       debit: -acc.netSettlementAmount.amount < 0 ? -acc.netSettlementAmount.amount : '-',
       currency: acc.netSettlementAmount.currency,
@@ -40,7 +41,6 @@ const SettlementDetails: FC<SettlementDetailsProps> = ({
       state: acc.state,
     })),
   );
-
   const { color, label } = helpers.getStatusProperties(selectedSettlement.state);
   return (
     <Modal title="Settlement Details" width="1200px" onClose={onModalCloseClick} flex>

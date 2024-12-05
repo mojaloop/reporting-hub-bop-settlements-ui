@@ -7,6 +7,7 @@ export const SET_DFSPS_ERROR = 'DFSPs / Set DFSPs Error';
 export interface DFSP {
   id: number;
   name: string;
+  accountIds: number[];
 }
 
 export interface DFSPsState {
