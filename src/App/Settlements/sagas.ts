@@ -90,8 +90,6 @@ function* processAdjustments({
   // (working) code to do so was not considered a priority.
 
   // @ts-ignore
-  // const settlement: Settlement = yield select(getSelectedSettlement);
-  // const report: SettlementReport = yield select(getSettlementReport);
   const results: FinalizeSettlementProcessAdjustmentsError[] = [];
   for (let i = 0; i < adjustments.length; i++) {
     const adjustment = adjustments[i];
@@ -311,7 +309,6 @@ function* collectSettlementFinalizeData(settlement: Settlement) {
   // we don't have to put up with the limitations of redux-saga.
   // Why get limits? We need to get limits before we can set limits, because `alarmPercentage` is a
   // required field when we set a limit, and we don't want to change that here.
-  // const report: SettlementReport = yield select(getSettlementReport);
   const {
     transformParticipantsLimits,
     ensureResponse,
