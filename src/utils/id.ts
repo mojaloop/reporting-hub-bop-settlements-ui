@@ -19,30 +19,34 @@
  their names indented and be marked with a '-'. Email address can be added
  optionally within square brackets <email>.
 
- * Mojaloop Foundation
- - Name Surname <name.surname@mojaloop.io>
-**** */
+ * Infitx
+ - Kalin Krustev <kalin.krustev@infitx.com>
 
-import React from 'react';
-import { useLocation } from 'react-router-dom';
-import './NavButton.css';
+ --------------
+ ***** */
 
-interface NavButtonProps {
-  link: string;
-  onClick: (link: string) => void;
-  children: React.ReactNode;
-}
+import crypto from 'crypto';
+import { monotonicFactory, ulid } from 'ulidx';
 
-export default function NavButton({ link, onClick, children }: NavButtonProps) {
-  const location = useLocation();
-  const active = location.pathname.startsWith(link);
-  return (
-    <button
-      className={`nav-button ${active ? 'nav-button--active' : ''}`}
-      onClick={() => onClick(link)}
-      type="button"
-    >
-      {children}
-    </button>
-  );
-}
+const generators = {
+  // generate UUID compliant with https://datatracker.ietf.org/doc/html/rfc9562
+  uuid: ({ version = 7 }) =>
+    ({
+      4: crypto.randomUUID,
+      7: () => {
+        const timestamp = Date.now().toString(16).padStart(12, '0');
+        const random = crypto.randomUUID();
+        return `${timestamp.substring(0, 8)}-${timestamp.substring(8, 12)}-7${random.substring(
+          15,
+          36,
+        )}`;
+      },
+    }[version]),
+  // monotonic parameter ensures ULIDs are generated in order when called at the same or older seed millisecond
+  ulid: ({ monotonic = true }) => (monotonic ? monotonicFactory() : ulid),
+};
+
+type GeneratorType = 'uuid' | 'ulid';
+
+export default ({ type = 'uuid', ...config }: { type?: GeneratorType; [key: string]: any } = {}) =>
+  generators[type](config);

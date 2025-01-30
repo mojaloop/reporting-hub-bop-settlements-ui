@@ -1,3 +1,28 @@
+/** ***
+ License
+ --------------
+ Copyright © 2020-2025 Mojaloop Foundation
+ The Mojaloop files are made available by the Mojaloop Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Mojaloop Foundation for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+
+ * Mojaloop Foundation
+ - Name Surname <name.surname@mojaloop.io>
+**** */
+
 import { createAction } from '@reduxjs/toolkit';
 import {
   REQUEST_SETTLEMENTS,
@@ -16,9 +41,6 @@ import {
   FINALIZE_SETTLEMENT,
   FINALIZE_SETTLEMENT_ERROR,
   SET_SETTLEMENT_REPORT_ERROR,
-  SET_FINALIZE_PROCESS_NDC_INCREASES,
-  SET_FINALIZE_PROCESS_NDC_DECREASES,
-  SET_FINALIZE_PROCESS_FUNDS_IN_OUT,
   SET_FINALIZE_SETTLEMENT_IN_PROGRESS,
   SET_SETTLEMENT_ADJUSTMENTS,
   SET_SETTLEMENT_REPORT_VALIDATION_ERRORS,
@@ -63,15 +85,6 @@ export const setSettlementReportError = createAction<null | string>(SET_SETTLEME
 export const setFinalizingSettlement = createAction<null | Settlement>(FINALIZING_SETTLEMENT);
 export const hideFinalizeSettlementModal = createAction(HIDE_FINALIZE_SETTLEMENT_MODAL);
 export const showFinalizeSettlementModal = createAction(SHOW_FINALIZE_SETTLEMENT_MODAL);
-export const setFinalizeProcessFundsInOut = createAction<boolean>(
-  SET_FINALIZE_PROCESS_FUNDS_IN_OUT,
-);
-export const setFinalizeProcessNdcIncreases = createAction<boolean>(
-  SET_FINALIZE_PROCESS_NDC_INCREASES,
-);
-export const setFinalizeProcessNdcDecreases = createAction<boolean>(
-  SET_FINALIZE_PROCESS_NDC_DECREASES,
-);
 export const setSettlementFinalizingInProgress = createAction<boolean>(
   SET_FINALIZE_SETTLEMENT_IN_PROGRESS,
 );

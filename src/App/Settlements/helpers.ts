@@ -1,6 +1,30 @@
+/** ***
+ License
+ --------------
+ Copyright © 2020-2025 Mojaloop Foundation
+ The Mojaloop files are made available by the Mojaloop Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Mojaloop Foundation for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+
+ * Mojaloop Foundation
+ - Name Surname <name.surname@mojaloop.io>
+**** */
+
 import { strict as assert } from 'assert';
 import moment from 'moment';
-import ExcelJS from 'exceljs';
 import {
   AccountId,
   AccountWithPosition,
@@ -319,6 +343,7 @@ export type ParticipantsAccounts = Map<
 >;
 
 export interface SettlementFinalizeData {
+  settlement: Settlement;
   participantsLimits: Map<FspName, Map<Currency, Limit>>;
   accountsParticipants: AccountsParticipants;
   participantsAccounts: ParticipantsAccounts;
@@ -989,84 +1014,5 @@ export function readFileAsArrayBuffer(file: File): PromiseLike<ArrayBuffer> {
     reader.onload = () => res(reader.result as ArrayBuffer);
     reader.onerror = rej;
     reader.readAsArrayBuffer(file);
-  });
-}
-
-// Note: ExcelJS does not support streaming in browser.
-export function deserializeReport(buf: ArrayBuffer): PromiseLike<SettlementReport> {
-  const wb = new ExcelJS.Workbook();
-  return wb.xlsx.load(buf).then(() => {
-    const SETTLEMENT_ID_CELL = 'B1';
-    const PARTICIPANT_INFO_COL = 'A';
-    const BALANCE_COL = 'C';
-    const TRANSFER_AMOUNT_COL = 'D';
-
-    const ws = wb.getWorksheet(1);
-    const settlementIdText = ws.getCell(SETTLEMENT_ID_CELL).text;
-    const settlementId = Number(settlementIdText);
-    assert(
-      /^[0-9]+$/.test(settlementIdText) && !Number.isNaN(settlementId),
-      new Error(
-        `Unable to extract settlement ID from cell ${SETTLEMENT_ID_CELL}. Found: ${settlementIdText}`,
-      ),
-    );
-
-    const startOfData = 7;
-    let endOfData = 7;
-    while (ws.getCell(`A${endOfData}`).text !== '') {
-      endOfData += 1;
-    }
-
-    const entries =
-      ws.getRows(startOfData, endOfData - startOfData)?.map((r) => {
-        const switchIdentifiers = r.getCell(PARTICIPANT_INFO_COL).text;
-        // TODO: check valid FSP name. It *should* be ASCII; because it has to go into an HTTP
-        // header verbatim, and HTTP headers are restricted to printable ASCII. However, the ML
-        // spec might differently, or further restrict it.
-        const [id, positionAccountId, name] = (() => {
-          try {
-            return extractSwitchIdentifiers(switchIdentifiers);
-          } catch (err) {
-            throw new Error(
-              `Error extracting switch identifiers from cell ${PARTICIPANT_INFO_COL}${r.number}: ${err.message}`,
-            );
-          }
-        })();
-
-        const balanceText = r.getCell(BALANCE_COL).text;
-        const balance = extractReportQuantity(balanceText);
-        assert(
-          !Number.isNaN(balance),
-          `Unable to extract account balance from ${BALANCE_COL}${r.number}. Cell contents: [${balanceText}]`,
-        );
-
-        const transferAmountText = r.getCell(TRANSFER_AMOUNT_COL).text;
-        const transferAmount = extractReportQuantity(transferAmountText);
-        assert(
-          !Number.isNaN(transferAmount),
-          `Unable to extract transfer amount from ${TRANSFER_AMOUNT_COL}${r.number}. Cell contents: [${transferAmountText}]`,
-        );
-
-        return {
-          participant: {
-            id,
-            name,
-          },
-          positionAccountId,
-          balance,
-          transferAmount,
-          row: {
-            rowNumber: r.number,
-            switchIdentifiers,
-            balance,
-            transferAmount,
-          },
-        };
-      }) || [];
-
-    return {
-      settlementId,
-      entries,
-    };
   });
 }

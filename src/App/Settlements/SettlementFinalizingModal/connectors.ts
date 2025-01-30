@@ -1,18 +1,40 @@
+/** ***
+ License
+ --------------
+ Copyright © 2020-2025 Mojaloop Foundation
+ The Mojaloop files are made available by the Mojaloop Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Mojaloop Foundation for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+
+ * Mojaloop Foundation
+ - Name Surname <name.surname@mojaloop.io>
+**** */
+
 import { connect, ConnectedProps } from 'react-redux';
 import { ReduxContext } from 'store';
 import { State, Dispatch } from 'store/types';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
-import { Settlement, SettlementReport } from '../types';
+import { Settlement } from '../types';
 
 const mapStateProps = (state: State) => ({
   settlementReport: selectors.getSettlementReport(state),
   finalizingSettlement: selectors.getFinalizingSettlement(state),
   finalizingSettlementError: selectors.getFinalizingSettlementError(state),
   settlementReportError: selectors.getSettlementReportError(state),
-  processFundsInOut: selectors.getFinalizeProcessFundsInOut(state),
-  processNdcIncreases: selectors.getFinalizeProcessNdcIncreases(state),
-  processNdcDecreases: selectors.getFinalizeProcessNdcDecreases(state),
   settlementFinalizingInProgress: selectors.getSettlementFinalizingInProgress(state),
   settlementReportValidationWarnings: selectors.getSettlementReportValidationWarnings(state),
   settlementReportValidationErrors: selectors.getSettlementReportValidationErrors(state),
@@ -38,28 +60,10 @@ const mapDispatchProps = (dispatch: Dispatch) => ({
     dispatch(actions.hideFinalizeSettlementModal());
     dispatch(actions.requestSettlements());
   },
-  onValidateButtonClick: () => {
-    dispatch(actions.validateSettlementReport());
-    dispatch(actions.setSettlementReportValidationInProgress(true));
-  },
   onProcessButtonClick: (settlement: Settlement) => {
     dispatch(actions.setSettlementFinalizingInProgress(true));
     dispatch(actions.finalizeSettlement(settlement));
   },
-  onSelectSettlementReport: (report: SettlementReport) => {
-    dispatch(actions.setSettlementReportValidationErrors(null));
-    dispatch(actions.setSettlementReportValidationWarnings(null));
-    dispatch(actions.setSettlementReport(report || null));
-  },
-  onSettlementReportProcessingError: (err: string) =>
-    dispatch(actions.setSettlementReportError(err)),
-  onSetFundsInOutChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(actions.setFinalizeProcessFundsInOut(e.target.checked));
-  },
-  onSetNetDebitCapDecreasesChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(actions.setFinalizeProcessNdcDecreases(e.target.checked)),
-  onSetNetDebitCapIncreasesChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-    dispatch(actions.setFinalizeProcessNdcIncreases(e.target.checked)),
   onClearSettlementReportWarnings: () =>
     dispatch(actions.setSettlementReportValidationWarnings(null)),
 });

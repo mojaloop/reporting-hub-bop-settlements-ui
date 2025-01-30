@@ -1,10 +1,33 @@
+/** ***
+ License
+ --------------
+ Copyright © 2020-2025 Mojaloop Foundation
+ The Mojaloop files are made available by the Mojaloop Foundation under the Apache License, Version 2.0 (the "License") and you may not use these files except in compliance with the License. You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, the Mojaloop files are distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+ Contributors
+ --------------
+ This is the official list of the Mojaloop project contributors for this file.
+ Names of the original copyright holders (individuals or organizations)
+ should be listed with a '*' in the first column. People who have
+ contributed from an organization can be listed under the organization
+ that actually holds the copyright for their contributions (see the
+ Mojaloop Foundation for an example). Those individuals should have
+ their names indented and be marked with a '-'. Email address can be added
+ optionally within square brackets <email>.
+
+ * Mojaloop Foundation
+ - Name Surname <name.surname@mojaloop.io>
+**** */
+
 import { strict as assert } from 'assert';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { Button, ErrorBox, Modal, Spinner } from 'outdated-components';
 import { MD5 as hash } from 'object-hash';
 import {
-  readFileAsArrayBuffer,
-  deserializeReport,
   generateSettlementReportValidationDetail,
   explainSettlementReportValidationKind,
 } from '../helpers';
@@ -30,29 +53,16 @@ function displaySettlementReportValidation(v: SettlementReportValidation) {
 }
 
 const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
-  settlementReport,
   settlementFinalizingInProgress,
-  settlementReportValidationInProgress,
   finalizingSettlement,
   finalizingSettlementError,
   onModalCloseClick,
   onProcessButtonClick,
-  onValidateButtonClick,
-  onSelectSettlementReport,
-  onSettlementReportProcessingError,
   settlementReportError,
-  onSetNetDebitCapIncreasesChange,
-  onSetNetDebitCapDecreasesChange,
-  onSetFundsInOutChange,
-  processFundsInOut,
-  processNdcIncreases,
-  processNdcDecreases,
   settlementReportValidationErrors,
   settlementReportValidationWarnings,
   onClearSettlementReportWarnings,
 }) => {
-  const [controller, setController] = useState<AbortController | undefined>(undefined);
-
   function computeErrorDetails(err: FinalizeSettlementError) {
     switch (err.type) {
       case FinalizeSettlementErrorKind.ABORTED_SETTLEMENT:
@@ -190,114 +200,16 @@ const SettlementFinalizingModal: FC<SettlementFinalizingModalProps> = ({
     </ErrorBox>
   ) : (
     <div>
-      <div>Please select a settlement finalization report to process:</div>
-      <br />
-      <input
-        type="file"
-        disabled={settlementFinalizingInProgress}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          // This is a little bit funky: we don't want to put any non-serializable state in the
-          // store, but redux-saga makes this rather tricky. So we do this transformation here.
-          // The problem with this is that the user could, for example, accidentally select a very
-          // large file that spends a long time in readFileAsArrayBuffer. Upon noticing their
-          // error, the user might then select a much smaller file, triggering this function again,
-          // while the previous invocation is still busy in readFileAsArrayBuffer. So we handle
-          // cancellation ourselves here.
-          // TODO: test this; probably by extracting the function processSelectedReportFile
-          if (controller !== undefined) {
-            controller.abort();
-          }
-          const newController = new AbortController();
-          setController(newController);
-          if (e.target.files?.[0]) {
-            // Use a lambda to close over the argument values at the time of calling
-            (function processSelectedReportFile(signal, file) {
-              return new Promise((resolve, reject) => {
-                signal.addEventListener('abort', () => reject(new Error('aborted')));
-                readFileAsArrayBuffer(file)
-                  .then((fileBuf) => deserializeReport(fileBuf))
-                  .then((report) => ({ ...report, reportFileName: file.name }))
-                  .then(resolve, reject);
-              })
-                .catch((err) => {
-                  // if aborted, ignore, we're not bothered
-                  if (err.message !== 'aborted') {
-                    console.error(err);
-                    onSettlementReportProcessingError(err.message);
-                  }
-                })
-                .then(onSelectSettlementReport);
-            })(newController.signal, e.target.files[0]);
-          }
-        }}
-      />
-      <br />
-      <label htmlFor="set-process-funds-in-out">
-        <input
-          id="set-process-funds-in-out"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processFundsInOut}
-          onChange={onSetFundsInOutChange}
-        />
-        Set liquidity account balance to balance values in settlement finalization report
-      </label>
-      <br />
-      <label htmlFor="set-process-net-debit-cap-decreases">
-        <input
-          id="set-process-net-debit-cap-decreases"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processNdcDecreases}
-          onChange={onSetNetDebitCapDecreasesChange}
-        />
-        <i>Decrease</i> net debit caps to balance values in settlement finalization report
-      </label>
-      <br />
-      <label htmlFor="set-process-net-debit-cap-increases">
-        <input
-          id="set-process-net-debit-cap-increases"
-          type="checkbox"
-          disabled={settlementFinalizingInProgress}
-          checked={processNdcIncreases}
-          onChange={onSetNetDebitCapIncreasesChange}
-        />
-        <i>Increase</i> net debit caps to balance values in settlement finalization report
-      </label>
-      <br />
-      <Button
-        pending={settlementReportValidationInProgress}
-        kind="secondary"
-        noFill
-        size="s"
-        label="Validate"
-        disabled={settlementReport === null || settlementFinalizingInProgress}
-        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
-          e.stopPropagation();
-          if (settlementReport !== null) {
-            onValidateButtonClick();
-          }
-        }}
-      />
-      {settlementReportValidationErrors?.length === 0 ? <>&nbsp;✅</> : <></>}
-      <br />
       <Button
         pending={settlementFinalizingInProgress}
         kind="secondary"
         noFill
         size="s"
         label="Process"
-        disabled={
-          settlementReport === null ||
-          settlementFinalizingInProgress ||
-          settlementReportValidationErrors === null ||
-          finalizingSettlement.state === 'SETTLED'
-        }
+        disabled={settlementFinalizingInProgress || finalizingSettlement.state === 'SETTLED'}
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.stopPropagation();
-          if (settlementReport !== null) {
-            onProcessButtonClick(finalizingSettlement);
-          }
+          onProcessButtonClick(finalizingSettlement);
         }}
       />
       <hr />
