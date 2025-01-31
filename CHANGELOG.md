@@ -1,4 +1,16 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.21](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.19-wynepay...v0.0.21) (2025-01-31)
+
+
+### Features
+
+* update ui to generic settlement process, remove reporting api and old test harness ([#53](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/53)) ([0226a5b](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/0226a5b15c97d578f3ed3baadbc732772f74acd7)), closes [#54](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/54)
+
+
+### Bug Fixes
+
+* version ([#55](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/55)) ([821e8ab](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/821e8abb48884a7f96023feb82260dd61d2d69b3))
+
 ### [0.0.19](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.18...v0.0.19) (2024-11-08)
 
 ### [0.0.18](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.17...v0.0.18) (2023-04-11)
