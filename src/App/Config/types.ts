@@ -23,7 +23,7 @@
  - Name Surname <name.surname@mojaloop.io>
 **** */
 
-import { AuthConfig } from '@modusbox/microfrontend-utils';
+import { AuthConfig } from '@pm4ml/microfrontend-utils';
 
 export { AuthConfig };
 export interface ConfigState extends AuthConfig {}

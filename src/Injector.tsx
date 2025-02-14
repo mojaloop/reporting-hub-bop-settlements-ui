@@ -25,7 +25,7 @@
 
 import React from 'react';
 import { Provider } from 'react-redux';
-import { PubSub, AuthConfig } from '@modusbox/microfrontend-utils';
+import { PubSub, AuthConfig } from '@pm4ml/microfrontend-utils';
 import { store, ReduxContext } from './store';
 import App from './App';
 import { actions } from './App/Config';
