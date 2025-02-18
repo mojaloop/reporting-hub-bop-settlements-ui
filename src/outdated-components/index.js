@@ -23,7 +23,7 @@
  - Name Surname <name.surname@mojaloop.io>
 **** */
 
-import '@modusbox/modusbox-ui-components/dist/index.css';
+import '@pm4ml/mojaloop-payment-manager-ui-components-legacy/dist/index.css';
 import {
   Button,
   Checkbox,
@@ -60,7 +60,7 @@ import {
   TextField,
   Toast,
   Tooltip,
-} from '@modusbox/modusbox-ui-components/dist/index';
+} from '@pm4ml/mojaloop-payment-manager-ui-components-legacy/dist/index';
 
 import DataLabel from './DataLabel';
 import Led from './Led';

@@ -24,7 +24,7 @@
 **** */
 
 import { State } from 'store';
-import buildApi, { buildEndpointBuilder, EndpointConfig } from '@modusbox/redux-utils/lib/api';
+import buildApi, { buildEndpointBuilder, EndpointConfig } from '@pm4ml/redux-utils/lib/api';
 
 const [centralSettlementsURL, centralLedgerURL] =
   process.env.NODE_ENV === 'production'

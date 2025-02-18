@@ -25,7 +25,7 @@
 
 import React, { FC } from 'react';
 // @ts-ignore
-import { MessageBox } from '@modusbox/modusbox-ui-components/dist/index';
+import { MessageBox } from '@pm4ml/mojaloop-payment-manager-ui-components-legacy/dist/index';
 
 const ErrorBox: FC<unknown> = ({ children }) => (
   <MessageBox

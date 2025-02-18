@@ -24,7 +24,7 @@
 **** */
 
 // Removed because we reverted the version of this package due to a bug
-// import { composeOptions } from '@modusbox/modusbox-ui-components/dist/utils/html';
+// import { composeOptions } from '@pm4ml/mojaloop-payment-manager-ui-components-legacy/dist/utils/html';
 import { DateRanges, SettlementWindowStatus } from './types';
 
 const composeOptions = (opts: any) => {
