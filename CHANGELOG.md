@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.22](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.21...v0.0.22) (2025-02-18)
+
+
+### Maintenance
+
+* update to pm4ml packages ([#57](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/57)) ([3c74fd5](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/3c74fd595e164077cfa35a9ef25306b253c59ba2))
+
 ### [0.0.21](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.19-wynepay...v0.0.21) (2025-01-31)
 
 
