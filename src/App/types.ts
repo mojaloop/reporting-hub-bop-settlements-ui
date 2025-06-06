@@ -246,4 +246,5 @@ export interface Settlement {
   totalValue: number;
   createdDate: string;
   changedDate: string;
+  totalCurrencyValues?: NetSettlementAmount[];
 }

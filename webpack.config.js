@@ -67,14 +67,14 @@ module.exports = {
       '/central-settlements': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `central-settlements` service
-        target: 'http://localhost:36491',
+        target: 'http://localhost:3007',
         pathRewrite: { '^/central-settlements': '/v2' },
         secure: false,
       },
       '/central-ledger': {
         // For local testing update `target` to point to your
         // locally hosted or port-forwarded `central-ledger` service
-        target: 'http://localhost:36683',
+        target: 'http://localhost:3001',
         pathRewrite: { '^/central-ledger': '' },
         secure: false,
       },

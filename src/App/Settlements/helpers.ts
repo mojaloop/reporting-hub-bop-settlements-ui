@@ -45,6 +45,7 @@ import {
   SettlementReportValidationKind,
   SettlementReportEntry,
   SettlementStatus,
+  NetSettlementAmount,
 } from './types';
 
 import { Currency } from '../types';
@@ -469,6 +470,38 @@ export function buildFiltersParams(filters: SettlementFilters) {
 
 /* @ts-ignore */
 export function mapApiToModel(item: any): Settlement {
+  // To show totals for each currency
+  const currencyAccs: NetSettlementAmount[] = [];
+
+  item.participants.forEach((participant: SettlementParticipant) => {
+    participant.accounts.forEach((account) => {
+      const found = currencyAccs.find((acc) => {
+        return acc.currency === account.netSettlementAmount.currency;
+      });
+
+      if (found) {
+        found.amount += Math.max(account.netSettlementAmount.amount, 0);
+
+        // Format floating points based on currencies
+        let decimalPlace: number = 4;
+        const curData = CURRENCY_DATA.get(found.currency);
+        if (curData) {
+          const minorUnit = Number(curData.minorUnit);
+          if (!Number.isNaN(minorUnit)) decimalPlace = minorUnit;
+        }
+        // Round according to decimal place of the currency
+        found.amount = Math.round(found.amount * 10 ** decimalPlace) / 10 ** decimalPlace;
+      } else {
+        const currencyAcc: NetSettlementAmount = {
+          currency: account.netSettlementAmount.currency,
+          amount: Math.max(account.netSettlementAmount.amount, 0),
+        };
+
+        currencyAccs.push(currencyAcc);
+      }
+    });
+  });
+
   return {
     id: item.id,
     state: item.state,
@@ -478,16 +511,8 @@ export function mapApiToModel(item: any): Settlement {
     createdDate: item.createdDate,
     changedDate: item.changedDate,
 
-    totalValue: item.participants.reduce((p: number, c: any) => {
-      /* @ts-ignore */
-      return (
-        p +
-        c.accounts.reduce(
-          (pp: number, cc: any) => pp + Math.max(cc.netSettlementAmount.amount, 0),
-          0,
-        )
-      );
-    }, 0),
+    totalValue: 0,
+    totalCurrencyValues: currencyAccs,
   };
 }
 

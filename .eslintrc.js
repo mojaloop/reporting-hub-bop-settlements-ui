@@ -12,12 +12,10 @@ module.exports = {
       version: '16.13',
     },
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['react', '@typescript-eslint'],
   extends: [
     'airbnb-typescript',
     'plugin:react/recommended',
-    'plugin:prettier/recommended',
-    'prettier/@typescript-eslint',
   ],
   env: {
     browser: true,
@@ -26,13 +24,16 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    'prettier/prettier': [
-      'error',
-      {
-        singleQuote: true,
-        trailingComma: 'all',
-      },
-    ],
+    'comma-dangle': 'off',
+    '@typescript-eslint/comma-dangle': 'off',
+    '@typescript-eslint/indent': 'off',
+    'object-curly-newline': 'off',
+    'arrow-body-style': 'off',
+    'operator-linebreak': 'off',
+    '@typescript-eslint/quotes': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'function-paren-newline': 'off',
+    'no-confusing-arrow': 'off',
     'react/prop-types': [
       1,
       {
