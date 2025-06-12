@@ -4,6 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'utils/api';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import utilId from 'utils/id';
+import Decimal from 'decimal.js';
 import {
   AccountId,
   AccountWithPosition,
@@ -250,12 +251,12 @@ function* processAdjustments({
 
       // Check if balance is changed since last GET
       if (newBalanceResult.status === 200 && newBalance !== adjustment.settlementAccount.value) {
-        const switchBalance = -adjustment.settlementAccount.value;
-        const expectedAccountBalance = switchBalance + adjustment.amount;
+        const switchBalance = new Decimal(adjustment.settlementAccount.value).neg();
+        const expectedAccountBalance = switchBalance.add(adjustment.amount);
         // We use "negative" newBalance because the switch returns a negative value for credit
         // balances. The switch doesn't have a concept of debit balances for settlement
         // accounts.
-        if (-newBalance !== expectedAccountBalance) {
+        if (!new Decimal(newBalance).neg().equals(expectedAccountBalance)) {
           results.push({
             type: FinalizeSettlementProcessAdjustmentsErrorKind.BALANCE_INCORRECT,
             value: {
