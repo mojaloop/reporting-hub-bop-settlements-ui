@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.23](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.22...v0.0.23) (2025-07-08)
+
+
+### Features
+
+* total value for each currency in settlement detail added ([#64](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/64)) ([2e92f01](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/2e92f011c3bae2995b9ce2f03ef16d00d464c4ab))
+
 ### [0.0.22](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.21...v0.0.22) (2025-02-18)
 
 
