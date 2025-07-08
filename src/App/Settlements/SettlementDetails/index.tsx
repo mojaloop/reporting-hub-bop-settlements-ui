@@ -54,9 +54,23 @@ const SettlementDetails: FC<SettlementDetailsProps> = ({
   ];
 
   assert(selectedSettlement !== null);
-  const rows = selectedSettlement.participants.flatMap((p: SettlementParticipant) =>
-    // Position accounts are negative and is not intuitive for the ui.
 
+  // To render total values for each currency
+  const renderCurrencyTotals = () => (
+    <div className="settlement-details__dates-block">
+      {selectedSettlement?.totalCurrencyValues?.map((value) => (
+        <div key={value.currency} className="settlement-details__dates-block">
+          <DataLabel size="s" light>
+            Total Value ({value.currency})
+          </DataLabel>
+          <DataLabel size="m">{helpers.formatNumber(value.amount)}</DataLabel>
+        </div>
+      ))}
+    </div>
+  );
+
+  // Position accounts are negative and is not intuitive for the ui.
+  const rows = selectedSettlement.participants.flatMap((p: SettlementParticipant) =>
     p.accounts.map((acc) => ({
       dfsp: dfsps.find((dfsp: DFSP) => dfsp.accountIds.includes(acc.id))?.name,
       credit: -acc.netSettlementAmount.amount > 0 ? -acc.netSettlementAmount.amount : '-',
@@ -66,7 +80,9 @@ const SettlementDetails: FC<SettlementDetailsProps> = ({
       state: acc.state,
     })),
   );
+
   const { color, label } = helpers.getStatusProperties(selectedSettlement.state);
+
   return (
     <Modal title="Settlement Details" width="1200px" onClose={onModalCloseClick} flex>
       <Row align="flex-start flex-start">
@@ -88,10 +104,7 @@ const SettlementDetails: FC<SettlementDetailsProps> = ({
               </DataLabel>
             </Column>
             <Column grow="0" className="settlement-details__details-block">
-              <DataLabel size="s" light>
-                Total Value
-              </DataLabel>
-              <DataLabel size="m">{helpers.formatNumber(selectedSettlement.totalValue)}</DataLabel>
+              {renderCurrencyTotals()}
             </Column>
           </Row>
         </Column>

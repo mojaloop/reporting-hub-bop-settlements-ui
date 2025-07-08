@@ -187,7 +187,6 @@ const Settlements: FC<SettlementsProps> = ({
     const columns = [
       { key: 'id', label: 'Settlement ID' },
       { key: 'state', label: 'State', func: renderStatus, sortable: false, searchable: false },
-      { key: 'totalValue', label: 'Total Value', func: helpers.formatNumber },
       { key: 'createdDate', label: 'Open Date', func: helpers.formatDate },
       { key: 'changedDate', label: 'Last Action Date', func: helpers.formatDate },
       {
