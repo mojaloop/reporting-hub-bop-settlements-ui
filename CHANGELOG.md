@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.28](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.27...v0.0.28) (2025-08-19)
+
+
+### Bug Fixes
+
+* add ui path that can be checked by RBAC ([#75](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/75)) ([213d6f7](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/213d6f75add6e27a8666e9d00988d921575ea280))
+
 ### [0.0.27](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.26...v0.0.27) (2025-08-19)
 
 
