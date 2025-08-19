@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.29](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.28...v0.0.29) (2025-08-19)
+
+
+### Bug Fixes
+
+* ensure proper fallback for missing files in nginx configuration ([#76](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/76)) ([1695a86](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/1695a86866430ef1f152867c64586911b68a93d4))
+
 ### [0.0.28](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.27...v0.0.28) (2025-08-19)
 
 
