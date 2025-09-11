@@ -19,7 +19,7 @@ const config = {
 
 const { ModuleFederationPlugin } = webpack.container;
 
-module.exports = {
+module.exports = (env, argv) => ({
   // mode: "development",
   // Class names are needed for integration testing of the production build
   // `testcafe-react-selector` needs these classnames to be present
@@ -36,7 +36,7 @@ module.exports = {
     ],
   },
   entry: './src/index',
-  devtool: 'source-map',
+  devtool: argv.mode === 'production' ? 'source-map' : 'eval-cheap-module-source-map',
   devServer: {
     disableHostCheck: true,
     // Enable gzip compression of generated files.
@@ -206,4 +206,4 @@ module.exports = {
       process: 'process/browser'
    }),
   ].filter(Boolean),
-};
+});
