@@ -1,4 +1,11 @@
 # Changelog: [mojaloop/reporting-hub-bop-settlements-ui](https://github.com/mojaloop/reporting-hub-bop-settlements-ui)
+### [0.0.30](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.29...v0.0.30) (2025-09-11)
+
+
+### Bug Fixes
+
+* update webpack config to support different devtool settings based on mode ([#78](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/issues/78)) ([ee874f2](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/commit/ee874f2facee327e89023107ad48a41eb8402134))
+
 ### [0.0.29](https://github.com/mojaloop/reporting-hub-bop-settlements-ui/compare/v0.0.28...v0.0.29) (2025-08-19)
 
 
