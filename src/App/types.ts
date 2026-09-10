@@ -230,7 +230,8 @@ export interface SettlementParticipantAccount {
 }
 
 export interface SettlementParticipant {
-  id: number;
+  /** The participant's name, which is the id the switch knows it by. */
+  id: string;
   accounts: SettlementParticipantAccount[];
 }
 

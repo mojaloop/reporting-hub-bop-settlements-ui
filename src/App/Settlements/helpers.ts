@@ -875,14 +875,14 @@ export const validationFunctions = {
     const result = new Set<SettlementReportValidation>();
     report.entries.forEach((entry) => {
       const switchParticipant = accountsParticipants.get(entry.positionAccountId);
-      const settlementParticipantId = settlementParticipants.get(entry.positionAccountId)?.id;
+      const settlementParticipantName = settlementParticipants.get(entry.positionAccountId)?.id;
       // If we can't find the participant using the account ID, we'll have already returned an
       // "Invalid Account" error. If we can't find the settlement participant using the account ID,
       // we'll have returned an "account not in settlement" error.
-      if (switchParticipant && settlementParticipantId) {
+      if (switchParticipant && settlementParticipantName) {
         if (
           entry.participant.name !== switchParticipant.participant.name ||
-          entry.participant.id !== settlementParticipantId
+          entry.participant.name !== settlementParticipantName
         ) {
           result.add({
             kind: SettlementReportValidationKind.ReportIdentifiersNonMatching,
