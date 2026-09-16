@@ -28,8 +28,8 @@
  * FSPIOP error codes as they appear in an errorInformation.errorCode field,
  * mirroring @mojaloop/central-services-error-handling Enums.FSPIOPErrorCodes.
  */
-export const FspiopError = {
+export const fspiopErrorCodes = {
   VALIDATION_ERROR: { code: '3100', httpStatusCode: 400 },
 } as const;
 
-export default FspiopError;
+export default fspiopErrorCodes;

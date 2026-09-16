@@ -25,7 +25,7 @@
 
 import { strict as assert } from 'assert';
 import api from 'utils/api';
-import FspiopError from 'utils/errors';
+import fspiopErrorCodes from 'utils/errors';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import {
@@ -96,8 +96,8 @@ function* fetchSettlementWindows() {
         // filter at all. Having sent a filter is what tells the two apart.
         //   https://github.com/mojaloop/central-settlement/blob/main/src/domain/settlementWindow/index.js
         if (
-          resp.status === FspiopError.VALIDATION_ERROR.httpStatusCode &&
-          resp.data?.errorInformation?.errorCode === FspiopError.VALIDATION_ERROR.code &&
+          resp.status === fspiopErrorCodes.VALIDATION_ERROR.httpStatusCode &&
+          resp.data?.errorInformation?.errorCode === fspiopErrorCodes.VALIDATION_ERROR.code &&
           Object.keys(params).length > 0
         ) {
           return [];

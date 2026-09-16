@@ -4,7 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'utils/api';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import utilId from 'utils/id';
-import FspiopError from 'utils/errors';
+import fspiopErrorCodes from 'utils/errors';
 import Decimal from 'decimal.js';
 import {
   AccountId,
@@ -761,8 +761,8 @@ function* fetchSettlements() {
     // filter at all. Having sent a filter is what tells the two apart.
     //   https://github.com/mojaloop/central-settlement/blob/main/src/domain/settlement/index.js
     if (
-      response.status === FspiopError.VALIDATION_ERROR.httpStatusCode &&
-      response.data?.errorInformation?.errorCode === FspiopError.VALIDATION_ERROR.code &&
+      response.status === fspiopErrorCodes.VALIDATION_ERROR.httpStatusCode &&
+      response.data?.errorInformation?.errorCode === fspiopErrorCodes.VALIDATION_ERROR.code &&
       Object.keys(params).length > 0
     ) {
       yield put(setSettlements([]));
