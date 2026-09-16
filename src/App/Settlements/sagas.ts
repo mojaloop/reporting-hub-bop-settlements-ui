@@ -4,6 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import api from 'utils/api';
 import { all, call, put, select, takeLatest, delay } from 'redux-saga/effects';
 import utilId from 'utils/id';
+import FspiopError from 'utils/errors';
 import Decimal from 'decimal.js';
 import {
   AccountId,
@@ -755,22 +756,14 @@ function* fetchSettlements() {
     const response = yield call(api.settlements.read, {
       params,
     });
-    // Because when we call
-    //   GET /v2/settlements?state=PS_TRANSFERS_RECORDED
-    // and there are no settlements, central settlement returns
-    //   400 Bad Request
-    //   {
-    //     "errorInformation": {
-    //       "errorCode": "3100",
-    //       "errorDescription": "Generic validation error - Settlements not found"
-    //     }
-    //   }
-    // We translate this response to an empty array.
-    // Source here:
-    //   https://github.com/mojaloop/central-settlement/blob/45ecfe32d1039870aa9572e23747c24cd6d53c86/src/domain/settlement/index.js#L218
+    // Central settlement answers a filtered query that matches nothing with
+    // 400 and errorCode 3100, the same code it uses for a query carrying no
+    // filter at all. Having sent a filter is what tells the two apart.
+    //   https://github.com/mojaloop/central-settlement/blob/main/src/domain/settlement/index.js
     if (
-      response.status === 400 &&
-      /Generic validation error.*not found/.test(response.data?.errorInformation?.errorDescription)
+      response.status === FspiopError.VALIDATION_ERROR.httpStatusCode &&
+      response.data?.errorInformation?.errorCode === FspiopError.VALIDATION_ERROR.code &&
+      Object.keys(params).length > 0
     ) {
       yield put(setSettlements([]));
     } else {
