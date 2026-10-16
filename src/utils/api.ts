@@ -104,16 +104,19 @@ const participants: EndpointConfig = {
 const participantsLimits: EndpointConfig = {
   service: services.ledgerService,
   url: () => `/participants/limits`,
+  withCredentials: true,
 };
 
 const participantLimits: EndpointConfig = {
   service: services.ledgerService,
   url: (_, { participantName }) => `/participants/${participantName}/limits`,
+  withCredentials: true,
 };
 
 const participantAccounts: EndpointConfig = {
   service: services.ledgerService,
   url: (_, { participantName }) => `/participants/${participantName}/accounts`,
+  withCredentials: true,
 };
 const participantAccountTransfer: EndpointConfig = {
   service: services.ledgerService,
@@ -125,17 +128,20 @@ const participantAccountTransfer: EndpointConfig = {
       transferId,
     }: { participantName: string; accountId: string; transferId: string },
   ) => `/participants/${participantName}/accounts/${accountId}/transfers/${transferId}`,
+  withCredentials: true,
 };
 
 const participantAccount: EndpointConfig = {
   service: services.ledgerService,
   url: (_: State, { participantName, accountId }: { participantName: string; accountId: string }) =>
     `/participants/${participantName}/accounts/${accountId}`,
+  withCredentials: true,
 };
 
 const settlementModels: EndpointConfig = {
   service: services.ledgerService,
   url: () => '/settlementModels',
+  withCredentials: true,
 };
 
 export default buildApi({
